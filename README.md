@@ -13,6 +13,7 @@ A collection of handy tools that run **entirely in your browser**. Nothing is up
 | Word Counter | `#/word-counter` | Real-time count of words, characters (with and without spaces), sentences, paragraphs and lines, plus estimated reading and speaking time. Works with any language and is auto-saved in the browser. |
 | Image to Text (OCR) | `#/image-to-text` | Extracts text from an image (picked, dropped or pasted with Ctrl+V) in English, Spanish or both, using Tesseract.js in a Web Worker. The text can be edited, copied or downloaded as `.txt`. |
 | Video Editor & Converter | `#/video-converter` | Trim, crop, rotate and flip a video with a live preview, then convert it to MP4, WebM, MOV, MKV, AVI, GIF, MP3 or WAV. Powered by ffmpeg compiled to WebAssembly; the video never leaves the device. |
+| Audio Editor & Converter | `#/audio-editor` | Open an audio file (or a video, to extract its audio), see its waveform, select a range and trim, delete, fade, silence, normalize, change the gain, reverse or convert to mono, with undo/redo. Export to MP3, WAV, FLAC, M4A (AAC), OGG (Opus) or WebM (Opus) with a chosen bitrate, sample rate and channel count. |
 
 ## Getting started
 
@@ -83,11 +84,18 @@ src/
     │   ├── components/                 # Toolbar, image drop zone, extracted text output
     │   ├── hooks/                      # useOcrWorker (Tesseract.js worker), useImageSource (pick/drop/paste)
     │   └── lib/                        # Pure logic: languages + asset URLs, progress labels, image files
-    └── video-converter/
-        ├── VideoConverterPage.tsx      # Screen: file picker, then the editor
-        ├── components/                 # Preview with crop overlay, playback bar, trim/transform/format panels
-        ├── hooks/                      # useFfmpeg (engine in a Web Worker), useVideoFile, useEditSettings, useVideoConversion
-        └── lib/                        # Pure logic: ffmpeg arguments, formats, crop geometry, timecodes, log parsing
+    ├── video-converter/
+    │   ├── VideoConverterPage.tsx      # Screen: file picker, then the editor
+    │   ├── components/                 # Preview with crop overlay, playback bar, trim/transform/format panels
+    │   ├── hooks/                      # useFfmpeg (engine in a Web Worker), useVideoFile, useEditSettings, useVideoConversion
+    │   └── lib/                        # Pure logic: ffmpeg arguments, formats, crop geometry, timecodes, log parsing
+    └── audio-editor/
+        ├── AudioEditorPage.tsx         # Screen: file loading, header, empty state
+        ├── AudioWorkspace.tsx          # Editing screen for one file: waveform, transport, edits, export
+        ├── components/                 # Waveform canvas, transport bar, edit toolbar, export panel, drop target
+        ├── hooks/                      # useAudioDocument (undo/redo), useAudioPlayback, useAudioExport, shortcuts
+        └── lib/                        # Pure logic: edits, history, peaks, time parsing, output formats,
+                                        # plus decode.ts / encode.ts (Web Audio + Mediabunny, loaded on demand)
 scripts/
 └── copy-tesseract-assets.mjs   # Copies the OCR engine and language data into public/tesseract/
 ```
@@ -121,4 +129,4 @@ The video tool uses [ffmpeg.wasm](https://ffmpegwasm.netlify.app) with the **sin
 
 ## Tech stack
 
-[Vite](https://vite.dev) · [React](https://react.dev) · TypeScript · [Tailwind CSS](https://tailwindcss.com) · [React Router](https://reactrouter.com) (hash routing, so reloading a tool URL works on GitHub Pages) · [vite-plugin-pwa](https://vite-pwa-org.netlify.app) · [marked](https://marked.js.org) · [DOMPurify](https://github.com/cure53/DOMPurify) · [highlight.js](https://highlightjs.org) · [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/) · [node-qrcode](https://github.com/soldair/node-qrcode) · [Tesseract.js](https://tesseract.projectnaptha.com) · [ffmpeg.wasm](https://ffmpegwasm.netlify.app) · [Vitest](https://vitest.dev) + [jsQR](https://github.com/cozmo/jsQR) (tests decode every generated QR code)
+[Vite](https://vite.dev) · [React](https://react.dev) · TypeScript · [Tailwind CSS](https://tailwindcss.com) · [React Router](https://reactrouter.com) (hash routing, so reloading a tool URL works on GitHub Pages) · [vite-plugin-pwa](https://vite-pwa-org.netlify.app) · [marked](https://marked.js.org) · [DOMPurify](https://github.com/cure53/DOMPurify) · [highlight.js](https://highlightjs.org) · [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/) · [node-qrcode](https://github.com/soldair/node-qrcode) · [Tesseract.js](https://tesseract.projectnaptha.com) · [ffmpeg.wasm](https://ffmpegwasm.netlify.app) · [Mediabunny](https://mediabunny.dev) (with its LAME MP3, libFLAC and AAC WebAssembly encoders) · [Vitest](https://vitest.dev) + [jsQR](https://github.com/cozmo/jsQR) (tests decode every generated QR code)
