@@ -20,4 +20,11 @@ export const TOOLS: ToolDefinition[] = [
     description: 'Write Markdown with a live preview and export it as a paginated PDF or a clean, standalone HTML file.',
     component: lazy(() => import('../features/markdown-converter/MarkdownConverterPage')),
   },
+  {
+    id: 'image-ocr',
+    path: '/image-to-text',
+    name: 'Image to Text (OCR)',
+    description: 'Extract text from images in English or Spanish with Tesseract OCR. Drop, pick or paste an image.',
+    component: lazy(() => import('../features/image-ocr/ImageOcrPage')),
+  },
 ]
