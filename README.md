@@ -9,6 +9,8 @@ A collection of handy tools that run **entirely in your browser**. Nothing is up
 | Tool | Route | What it does |
 | --- | --- | --- |
 | Markdown to PDF & HTML | `#/markdown-to-pdf` | Markdown editor with live preview, syntax highlighting, PDF export and standalone HTML export. Text is auto-saved in the browser. |
+| QR Code Generator | `#/qr-code-generator` | Vector QR codes for text/URLs, Wi-Fi, contacts (vCard), email, SMS and phone calls. Custom colors, square/rounded/dot modules, center logo and silhouette shapes from any image. Export as SVG or PNG, or copy the SVG code. |
+| Word Counter | `#/word-counter` | Real-time count of words, characters (with and without spaces), sentences, paragraphs and lines, plus estimated reading and speaking time. Works with any language and is auto-saved in the browser. |
 | Image to Text (OCR) | `#/image-to-text` | Extracts text from an image (picked, dropped or pasted with Ctrl+V) in English, Spanish or both, using Tesseract.js in a Web Worker. The text can be edited, copied or downloaded as `.txt`. |
 
 ## Getting started
@@ -54,9 +56,10 @@ src/
 ├── App.tsx                  # Routes, generated from the tool registry
 ├── index.css                # Tailwind CSS entry
 ├── tools/registry.ts        # List of every tool (name, route, lazy-loaded page)
-├── components/              # Shared UI: Layout, HomePage, Button, SplitPane
-├── hooks/                   # Shared hooks: useLocalStorage, useDebouncedValue, useDocumentTitle
-├── lib/                     # Shared pure functions: file downloads, file names
+├── components/              # Shared UI: Layout, HomePage, Button, Panel, SplitPane
+│   └── form/                # Shared form controls: TextInput, Select, ColorInput, Slider, FileDrop…
+├── hooks/                   # Shared hooks: useLocalStorage, useDebouncedValue, useClipboard, useImageFile…
+├── lib/                     # Shared pure functions: file downloads, colors
 └── features/
     ├── markdown-converter/
     │   ├── MarkdownConverterPage.tsx   # Screen: wires hooks to components
@@ -64,6 +67,16 @@ src/
     │   ├── hooks/                      # useMarkdownDocument, useMarkdownParser, usePdfExport, useHtmlExport
     │   ├── lib/                        # Pure logic: parser + sanitizer, HTML template, title extraction
     │   └── styles/document.css         # Document styles shared by preview, PDF and HTML export
+    ├── qr-generator/
+    │   ├── QrGeneratorPage.tsx         # Screen: controls on the left, live preview + export on the right
+    │   ├── components/                 # Content forms, style/logo/silhouette panels, preview, export bar
+    │   ├── hooks/                      # useQrContent, useQrStyle, useShapeMask, useQrCode, useQrExport
+    │   └── lib/                        # Pure logic: payload encoders, QR matrix, layout, silhouette mask, SVG renderer
+    ├── word-counter/
+    │   ├── WordCounterPage.tsx         # Screen: text area + live statistics
+    │   ├── components/                 # StatsPanel, StatCard
+    │   ├── hooks/                      # useWordCounterText (auto-saved text and reading speed)
+    │   └── lib/                        # Pure logic: text statistics, reading time
     └── image-ocr/
         ├── ImageOcrPage.tsx            # Screen: wires hooks to components
         ├── components/                 # Toolbar, image drop zone, extracted text output
@@ -98,4 +111,4 @@ Tesseract.js normally downloads its worker, WebAssembly engine and language data
 
 ## Tech stack
 
-[Vite](https://vite.dev) · [React](https://react.dev) · TypeScript · [Tailwind CSS](https://tailwindcss.com) · [React Router](https://reactrouter.com) (hash routing, so reloading a tool URL works on GitHub Pages) · [vite-plugin-pwa](https://vite-pwa-org.netlify.app) · [marked](https://marked.js.org) · [DOMPurify](https://github.com/cure53/DOMPurify) · [highlight.js](https://highlightjs.org) · [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/) · [Tesseract.js](https://tesseract.projectnaptha.com) · [Vitest](https://vitest.dev)
+[Vite](https://vite.dev) · [React](https://react.dev) · TypeScript · [Tailwind CSS](https://tailwindcss.com) · [React Router](https://reactrouter.com) (hash routing, so reloading a tool URL works on GitHub Pages) · [vite-plugin-pwa](https://vite-pwa-org.netlify.app) · [marked](https://marked.js.org) · [DOMPurify](https://github.com/cure53/DOMPurify) · [highlight.js](https://highlightjs.org) · [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/) · [node-qrcode](https://github.com/soldair/node-qrcode) · [Tesseract.js](https://tesseract.projectnaptha.com) · [Vitest](https://vitest.dev) + [jsQR](https://github.com/cozmo/jsQR) (tests decode every generated QR code)

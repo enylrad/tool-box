@@ -21,6 +21,21 @@ export const TOOLS: ToolDefinition[] = [
     component: lazy(() => import('../features/markdown-converter/MarkdownConverterPage')),
   },
   {
+    id: 'qr-generator',
+    path: '/qr-code-generator',
+    name: 'QR Code Generator',
+    description:
+      'Create vector QR codes for links, Wi-Fi, contacts, email, SMS or phone calls, with custom colors, logo and silhouette shapes. Export as SVG or PNG.',
+    component: lazy(() => import('../features/qr-generator/QrGeneratorPage')),
+  },
+  {
+    id: 'word-counter',
+    path: '/word-counter',
+    name: 'Word Counter',
+    description: 'Count words, characters, sentences and paragraphs as you type, and see the estimated reading time.',
+    component: lazy(() => import('../features/word-counter/WordCounterPage')),
+  },
+  {
     id: 'image-ocr',
     path: '/image-to-text',
     name: 'Image to Text (OCR)',

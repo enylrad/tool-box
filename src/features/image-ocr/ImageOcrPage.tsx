@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { SplitPane, type SplitPaneSide } from '../../components/SplitPane'
+import { useClipboard } from '../../hooks/useClipboard'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { downloadBlob } from '../../lib/download'
@@ -12,7 +13,6 @@ import { toTextFileName } from './lib/imageFile'
 import { DEFAULT_OCR_LANGUAGE, isOcrLanguage, type OcrLanguage } from './lib/ocrLanguages'
 
 const LANGUAGE_STORAGE_KEY = 'tool-box:image-ocr:language'
-const COPIED_FEEDBACK_MS = 2000
 
 export default function ImageOcrPage() {
   useDocumentTitle('Image to Text (OCR)')
@@ -21,10 +21,9 @@ export default function ImageOcrPage() {
   const language = isOcrLanguage(storedLanguage) ? storedLanguage : DEFAULT_OCR_LANGUAGE
   const [result, setResult] = useState<OcrResult | null>(null)
   const [text, setText] = useState('')
-  const [copyError, setCopyError] = useState<string | null>(null)
-  const [isCopied, setIsCopied] = useState(false)
   const [activePane, setActivePane] = useState<SplitPaneSide>('left')
   const { recognize, isRecognizing, progress, error: ocrError } = useOcrWorker()
+  const { copy, copied, error: copyError } = useClipboard()
 
   const extractText = async (file: File, ocrLanguage = language) => {
     setActivePane('right')
@@ -43,22 +42,6 @@ export default function ImageOcrPage() {
     disabled: isRecognizing,
   })
 
-  useEffect(() => {
-    if (!isCopied) return
-    const timeoutId = window.setTimeout(() => setIsCopied(false), COPIED_FEEDBACK_MS)
-    return () => window.clearTimeout(timeoutId)
-  }, [isCopied])
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(text)
-      setCopyError(null)
-      setIsCopied(true)
-    } catch {
-      setCopyError('Could not copy to the clipboard. Select the text and copy it manually.')
-    }
-  }
-
   const handleDownload = () => {
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
     downloadBlob(blob, toTextFileName(image?.name ?? ''))
@@ -74,7 +57,6 @@ export default function ImageOcrPage() {
     clearImage()
     setResult(null)
     setText('')
-    setCopyError(null)
   }
 
   const statusText = result
@@ -96,9 +78,9 @@ export default function ImageOcrPage() {
         hasImage={image !== null}
         hasText={text.length > 0}
         isRecognizing={isRecognizing}
-        isCopied={isCopied}
+        isCopied={copied}
         onRecognize={() => image && void extractText(image)}
-        onCopy={() => void handleCopy()}
+        onCopy={() => void copy(text)}
         onDownload={handleDownload}
         onClear={handleClear}
       />
