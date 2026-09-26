@@ -20,4 +20,11 @@ export const TOOLS: ToolDefinition[] = [
     description: 'Write Markdown with a live preview and export it as a paginated PDF or a clean, standalone HTML file.',
     component: lazy(() => import('../features/markdown-converter/MarkdownConverterPage')),
   },
+  {
+    id: 'word-counter',
+    path: '/word-counter',
+    name: 'Word Counter',
+    description: 'Count words, characters, sentences and paragraphs as you type, and see the estimated reading time.',
+    component: lazy(() => import('../features/word-counter/WordCounterPage')),
+  },
 ]

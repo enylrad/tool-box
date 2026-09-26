@@ -9,6 +9,7 @@ A collection of handy tools that run **entirely in your browser**. Nothing is up
 | Tool | Route | What it does |
 | --- | --- | --- |
 | Markdown to PDF & HTML | `#/markdown-to-pdf` | Markdown editor with live preview, syntax highlighting, PDF export and standalone HTML export. Text is auto-saved in the browser. |
+| Word Counter | `#/word-counter` | Real-time count of words, characters (with and without spaces), sentences, paragraphs and lines, plus estimated reading and speaking time. Works with any language and is auto-saved in the browser. |
 
 ## Getting started
 
@@ -57,12 +58,17 @@ src/
 ├── hooks/                   # Shared hooks: useLocalStorage, useDebouncedValue, useDocumentTitle
 ├── lib/                     # Shared pure functions: file downloads, file names
 └── features/
-    └── markdown-converter/
-        ├── MarkdownConverterPage.tsx   # Screen: wires hooks to components
-        ├── components/                 # Toolbar, editor, preview, responsive split pane
-        ├── hooks/                      # useMarkdownDocument, useMarkdownParser, usePdfExport, useHtmlExport
-        ├── lib/                        # Pure logic: parser + sanitizer, HTML template, title extraction
-        └── styles/document.css         # Document styles shared by preview, PDF and HTML export
+    ├── markdown-converter/
+    │   ├── MarkdownConverterPage.tsx   # Screen: wires hooks to components
+    │   ├── components/                 # Toolbar, editor, preview, responsive split pane
+    │   ├── hooks/                      # useMarkdownDocument, useMarkdownParser, usePdfExport, useHtmlExport
+    │   ├── lib/                        # Pure logic: parser + sanitizer, HTML template, title extraction
+    │   └── styles/document.css         # Document styles shared by preview, PDF and HTML export
+    └── word-counter/
+        ├── WordCounterPage.tsx         # Screen: text area + live statistics
+        ├── components/                 # StatsPanel, StatCard
+        ├── hooks/                      # useWordCounterText (auto-saved text and reading speed)
+        └── lib/                        # Pure logic: text statistics, reading time
 ```
 
 The rule of thumb: **components** only render, **hooks** hold state and side effects, **lib** holds pure, unit-tested functions.
