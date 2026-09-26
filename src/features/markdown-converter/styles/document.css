@@ -1,0 +1,124 @@
+/*
+ * Document typography shared by the live preview, the PDF export and the HTML
+ * export. Colors are plain hex values on purpose: the PDF renderer
+ * (html2canvas) cannot parse modern color functions such as oklch().
+ */
+.markdown-body {
+  color: #1f2328;
+  background-color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+
+.markdown-body > :first-child { margin-top: 0; }
+.markdown-body > :last-child { margin-bottom: 0; }
+
+.markdown-body p,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body blockquote,
+.markdown-body pre,
+.markdown-body table,
+.markdown-body dl {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.markdown-body h1 { font-size: 2em; padding-bottom: 0.3em; border-bottom: 1px solid #d1d9e0; }
+.markdown-body h2 { font-size: 1.5em; padding-bottom: 0.3em; border-bottom: 1px solid #d1d9e0; }
+.markdown-body h3 { font-size: 1.25em; }
+.markdown-body h4 { font-size: 1em; }
+.markdown-body h5 { font-size: 0.875em; }
+.markdown-body h6 { font-size: 0.85em; color: #59636e; }
+
+.markdown-body a { color: #0969da; text-decoration: underline; text-underline-offset: 2px; }
+.markdown-body strong { font-weight: 600; }
+
+.markdown-body ul,
+.markdown-body ol { padding-left: 2em; }
+.markdown-body ul { list-style: disc; }
+.markdown-body ol { list-style: decimal; }
+.markdown-body ul ul { list-style: circle; }
+.markdown-body li + li { margin-top: 0.25em; }
+.markdown-body li > ul,
+.markdown-body li > ol { margin-top: 0.25em; margin-bottom: 0; }
+.markdown-body li:has(> input[type='checkbox']) { list-style: none; margin-left: -1.4em; }
+.markdown-body input[type='checkbox'] { margin: 0 0.4em 0 0; vertical-align: middle; }
+
+.markdown-body blockquote {
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0 1em;
+  color: #59636e;
+  border-left: 0.25em solid #d1d9e0;
+}
+
+.markdown-body hr {
+  height: 0.25em;
+  margin: 24px 0;
+  padding: 0;
+  background-color: #d1d9e0;
+  border: 0;
+}
+
+.markdown-body img { max-width: 100%; height: auto; }
+
+.markdown-body code,
+.markdown-body pre {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  font-size: 85%;
+}
+
+.markdown-body :not(pre) > code {
+  padding: 0.2em 0.4em;
+  background-color: #eff1f3;
+  border-radius: 6px;
+}
+
+.markdown-body pre {
+  padding: 16px;
+  overflow: auto;
+  line-height: 1.45;
+  background-color: #f6f8fa;
+  border-radius: 6px;
+}
+
+.markdown-body pre code.hljs {
+  display: block;
+  padding: 0;
+  overflow: visible;
+  font-size: 100%;
+  background: transparent;
+}
+
+.markdown-body table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow: auto;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.markdown-body th,
+.markdown-body td { padding: 6px 13px; border: 1px solid #d1d9e0; }
+.markdown-body th { font-weight: 600; }
+.markdown-body tr:nth-child(2n) { background-color: #f6f8fa; }
+
+/* PDF output: nothing can scroll on paper, so wrap instead of clipping. */
+.markdown-body--print pre { overflow: visible; white-space: pre-wrap; word-break: break-word; }
+.markdown-body--print table { display: table; width: 100%; }
