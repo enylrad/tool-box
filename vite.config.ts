@@ -36,12 +36,23 @@ export default defineConfig({
         // html2pdf.js (with jsPDF and html2canvas) is large; raise the limit so
         // it is precached and PDF export keeps working offline.
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-        // The ffmpeg.wasm core (~31 MB) is not precached, so visitors who never open
-        // the video tool do not download it. It is cached the first time it is used
-        // and then works offline.
+        // The OCR runtime (~17 MB, copied by scripts/copy-tesseract-assets.mjs)
+        // is too large to precache for every visitor. It is cached the first
+        // time the OCR tool uses it instead, so it keeps working offline after that.
+        globIgnores: ['tesseract/**'],
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.pathname.endsWith('.wasm'),
+            urlPattern: new RegExp(`${BASE_PATH}tesseract/`),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'tesseract-assets',
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+          // The ffmpeg.wasm core (~31 MB) used by the video tool is not precached
+          // either (.wasm is not in globPatterns); it is cached on first use.
+          {
+            urlPattern: new RegExp(`${BASE_PATH}assets/ffmpeg-core-[^/]*\\.wasm$`),
             handler: 'CacheFirst',
             options: {
               cacheName: 'ffmpeg-core',
