@@ -28,4 +28,11 @@ export const TOOLS: ToolDefinition[] = [
       'Create vector QR codes for links, Wi-Fi, contacts, email, SMS or phone calls, with custom colors, logo and silhouette shapes. Export as SVG or PNG.',
     component: lazy(() => import('../features/qr-generator/QrGeneratorPage')),
   },
+  {
+    id: 'word-counter',
+    path: '/word-counter',
+    name: 'Word Counter',
+    description: 'Count words, characters, sentences and paragraphs as you type, and see the estimated reading time.',
+    component: lazy(() => import('../features/word-counter/WordCounterPage')),
+  },
 ]
