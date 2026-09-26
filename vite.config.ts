@@ -36,9 +36,30 @@ export default defineConfig({
         // html2pdf.js (with jsPDF and html2canvas) is large; raise the limit so
         // it is precached and PDF export keeps working offline.
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+        // The ffmpeg.wasm core (~31 MB) is not precached, so visitors who never open
+        // the video tool do not download it. It is cached the first time it is used
+        // and then works offline.
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.endsWith('.wasm'),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'ffmpeg-core',
+              expiration: { maxEntries: 2 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+        ],
       },
     }),
   ],
+  // ffmpeg.wasm starts its own module worker, which Vite must bundle as-is.
+  optimizeDeps: {
+    exclude: ['@ffmpeg/ffmpeg'],
+  },
+  worker: {
+    format: 'es',
+  },
   build: {
     // html2pdf.js (~930 kB) is only loaded on demand when exporting a PDF.
     chunkSizeWarningLimit: 1000,

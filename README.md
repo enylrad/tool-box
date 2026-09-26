@@ -9,6 +9,7 @@ A collection of handy tools that run **entirely in your browser**. Nothing is up
 | Tool | Route | What it does |
 | --- | --- | --- |
 | Markdown to PDF & HTML | `#/markdown-to-pdf` | Markdown editor with live preview, syntax highlighting, PDF export and standalone HTML export. Text is auto-saved in the browser. |
+| Video Editor & Converter | `#/video-converter` | Trim, crop, rotate and flip a video with a live preview, then convert it to MP4, WebM, MOV, MKV, AVI, GIF, MP3 or WAV. Powered by ffmpeg compiled to WebAssembly; the video never leaves the device. |
 
 ## Getting started
 
@@ -63,9 +64,18 @@ src/
         ├── hooks/                      # useMarkdownDocument, useMarkdownParser, usePdfExport, useHtmlExport
         ├── lib/                        # Pure logic: parser + sanitizer, HTML template, title extraction
         └── styles/document.css         # Document styles shared by preview, PDF and HTML export
+    └── video-converter/
+        ├── VideoConverterPage.tsx      # Screen: file picker, then the editor
+        ├── components/                 # Preview with crop overlay, playback bar, trim/transform/format panels
+        ├── hooks/                      # useFfmpeg (engine in a Web Worker), useVideoFile, useEditSettings, useVideoConversion
+        └── lib/                        # Pure logic: ffmpeg arguments, formats, crop geometry, timecodes, log parsing
 ```
 
 The rule of thumb: **components** only render, **hooks** hold state and side effects, **lib** holds pure, unit-tested functions.
+
+### About the video engine
+
+The video tool uses [ffmpeg.wasm](https://ffmpegwasm.netlify.app) with the **single-threaded** core, because GitHub Pages cannot send the COOP/COEP headers the multi-threaded build needs. The core (~31 MB of WebAssembly) is bundled with the site, downloaded only when the video tool is opened, and then cached by the service worker so it keeps working offline. Files are mounted read-only into the engine (WORKERFS), so the input is not copied into memory; the output still is, which is why very large files can fail. The ffmpeg core is licensed under the GPL (it includes x264).
 
 ## Adding a new tool
 
@@ -86,4 +96,4 @@ The rule of thumb: **components** only render, **hooks** hold state and side eff
 
 ## Tech stack
 
-[Vite](https://vite.dev) · [React](https://react.dev) · TypeScript · [Tailwind CSS](https://tailwindcss.com) · [React Router](https://reactrouter.com) (hash routing, so reloading a tool URL works on GitHub Pages) · [vite-plugin-pwa](https://vite-pwa-org.netlify.app) · [marked](https://marked.js.org) · [DOMPurify](https://github.com/cure53/DOMPurify) · [highlight.js](https://highlightjs.org) · [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/) · [Vitest](https://vitest.dev)
+[Vite](https://vite.dev) · [React](https://react.dev) · TypeScript · [Tailwind CSS](https://tailwindcss.com) · [React Router](https://reactrouter.com) (hash routing, so reloading a tool URL works on GitHub Pages) · [vite-plugin-pwa](https://vite-pwa-org.netlify.app) · [marked](https://marked.js.org) · [DOMPurify](https://github.com/cure53/DOMPurify) · [highlight.js](https://highlightjs.org) · [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/) · [ffmpeg.wasm](https://ffmpegwasm.netlify.app) · [Vitest](https://vitest.dev)

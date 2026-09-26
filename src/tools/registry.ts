@@ -20,4 +20,11 @@ export const TOOLS: ToolDefinition[] = [
     description: 'Write Markdown with a live preview and export it as a paginated PDF or a clean, standalone HTML file.',
     component: lazy(() => import('../features/markdown-converter/MarkdownConverterPage')),
   },
+  {
+    id: 'video-converter',
+    path: '/video-converter',
+    name: 'Video Editor & Converter',
+    description: 'Trim, crop, rotate or flip a video and convert it to MP4, WebM, MOV, MKV, AVI, GIF, MP3 or WAV.',
+    component: lazy(() => import('../features/video-converter/VideoConverterPage')),
+  },
 ]
