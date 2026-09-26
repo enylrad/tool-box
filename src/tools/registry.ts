@@ -43,4 +43,18 @@ export const TOOLS: ToolDefinition[] = [
       'Extract text from images and PDFs in English or Spanish. PDF text is read directly; scanned pages go through Tesseract OCR.',
     component: lazy(() => import('../features/image-ocr/ImageOcrPage')),
   },
+  {
+    id: 'video-converter',
+    path: '/video-converter',
+    name: 'Video Editor & Converter',
+    description: 'Trim, crop, rotate or flip a video and convert it to MP4, WebM, MOV, MKV, AVI, GIF, MP3 or WAV.',
+    component: lazy(() => import('../features/video-converter/VideoConverterPage')),
+  },
+  {
+    id: 'audio-editor',
+    path: '/audio-editor',
+    name: 'Audio Editor & Converter',
+    description: 'Trim, cut, fade, normalize and adjust the volume of audio files, then convert them to MP3, WAV, FLAC, M4A, OGG or WebM.',
+    component: lazy(() => import('../features/audio-editor/AudioEditorPage')),
+  },
 ]

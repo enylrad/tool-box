@@ -33,8 +33,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
-        // html2pdf.js (with jsPDF and html2canvas) is large; raise the limit so
-        // it is precached and PDF export keeps working offline.
+        // html2pdf.js (with jsPDF and html2canvas) and the audio encoders are
+        // large; raise the limit so they are precached and exports keep working offline.
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         // The OCR runtime (Tesseract.js ~17 MB and pdf.js ~5 MB, copied by
         // scripts/copy-ocr-assets.mjs) is too large to precache for every
@@ -50,12 +50,31 @@ export default defineConfig({
               cacheableResponse: { statuses: [200] },
             },
           },
+          // The ffmpeg.wasm core (~31 MB) used by the video tool is not precached
+          // either (.wasm is not in globPatterns); it is cached on first use.
+          {
+            urlPattern: new RegExp(`${BASE_PATH}assets/ffmpeg-core-[^/]*\\.wasm$`),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'ffmpeg-core',
+              expiration: { maxEntries: 2 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
         ],
       },
     }),
   ],
+  // ffmpeg.wasm starts its own module worker, which Vite must bundle as-is.
+  optimizeDeps: {
+    exclude: ['@ffmpeg/ffmpeg'],
+  },
+  worker: {
+    format: 'es',
+  },
   build: {
-    // html2pdf.js (~930 kB) is only loaded on demand when exporting a PDF.
+    // html2pdf.js (~930 kB) and the audio encoders (AAC ~990 kB, WebAssembly inlined)
+    // are only loaded on demand when exporting.
     chunkSizeWarningLimit: 1000,
   },
   test: {
