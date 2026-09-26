@@ -42,4 +42,11 @@ export const TOOLS: ToolDefinition[] = [
     description: 'Extract text from images in English or Spanish with Tesseract OCR. Drop, pick or paste an image.',
     component: lazy(() => import('../features/image-ocr/ImageOcrPage')),
   },
+  {
+    id: 'video-converter',
+    path: '/video-converter',
+    name: 'Video Editor & Converter',
+    description: 'Trim, crop, rotate or flip a video and convert it to MP4, WebM, MOV, MKV, AVI, GIF, MP3 or WAV.',
+    component: lazy(() => import('../features/video-converter/VideoConverterPage')),
+  },
 ]

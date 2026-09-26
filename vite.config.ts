@@ -49,10 +49,28 @@ export default defineConfig({
               cacheableResponse: { statuses: [200] },
             },
           },
+          // The ffmpeg.wasm core (~31 MB) used by the video tool is not precached
+          // either (.wasm is not in globPatterns); it is cached on first use.
+          {
+            urlPattern: new RegExp(`${BASE_PATH}assets/ffmpeg-core-[^/]*\\.wasm$`),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'ffmpeg-core',
+              expiration: { maxEntries: 2 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
         ],
       },
     }),
   ],
+  // ffmpeg.wasm starts its own module worker, which Vite must bundle as-is.
+  optimizeDeps: {
+    exclude: ['@ffmpeg/ffmpeg'],
+  },
+  worker: {
+    format: 'es',
+  },
   build: {
     // html2pdf.js (~930 kB) is only loaded on demand when exporting a PDF.
     chunkSizeWarningLimit: 1000,
