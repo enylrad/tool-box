@@ -36,16 +36,17 @@ export default defineConfig({
         // html2pdf.js (with jsPDF and html2canvas) is large; raise the limit so
         // it is precached and PDF export keeps working offline.
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-        // The OCR runtime (~17 MB, copied by scripts/copy-tesseract-assets.mjs)
-        // is too large to precache for every visitor. It is cached the first
-        // time the OCR tool uses it instead, so it keeps working offline after that.
-        globIgnores: ['tesseract/**'],
+        // The OCR runtime (Tesseract.js ~17 MB and pdf.js ~5 MB, copied by
+        // scripts/copy-ocr-assets.mjs) is too large to precache for every
+        // visitor. It is cached the first time the OCR tool uses it instead, so
+        // it keeps working offline after that.
+        globIgnores: ['tesseract/**', 'pdfjs/**'],
         runtimeCaching: [
           {
-            urlPattern: new RegExp(`${BASE_PATH}tesseract/`),
+            urlPattern: new RegExp(`${BASE_PATH}(tesseract|pdfjs)/`),
             handler: 'CacheFirst',
             options: {
-              cacheName: 'tesseract-assets',
+              cacheName: 'ocr-assets',
               cacheableResponse: { statuses: [200] },
             },
           },

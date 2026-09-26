@@ -1,16 +1,29 @@
 import { useRef, useState, type DragEvent } from 'react'
 import { Button } from '../../../components/Button'
-import { SUPPORTED_IMAGE_TYPES } from '../lib/imageFile'
+import { SUPPORTED_FILE_TYPES } from '../lib/sourceFile'
 
-interface ImageDropZoneProps {
-  previewUrl: string | null
+interface SourceDropZoneProps {
   fileName: string | null
+  /** Image (or rendered first PDF page) to preview. */
+  previewUrl: string | null
+  isPdf: boolean
+  pageCount: number | null
+  isPreviewLoading: boolean
   error: string | null
   disabled: boolean
   onFiles: (files: FileList | null) => void
 }
 
-export function ImageDropZone({ previewUrl, fileName, error, disabled, onFiles }: ImageDropZoneProps) {
+export function SourceDropZone({
+  fileName,
+  previewUrl,
+  isPdf,
+  pageCount,
+  isPreviewLoading,
+  error,
+  disabled,
+  onFiles,
+}: SourceDropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
 
@@ -27,6 +40,8 @@ export function ImageDropZone({ previewUrl, fileName, error, disabled, onFiles }
 
   const openFilePicker = () => inputRef.current?.click()
 
+  const details = isPdf && pageCount !== null ? `PDF · ${pageCount} ${pageCount === 1 ? 'page' : 'pages'}` : null
+
   return (
     <div
       className={`relative flex min-h-0 flex-1 flex-col bg-slate-100 p-4 transition-colors dark:bg-slate-900/50 ${
@@ -39,7 +54,7 @@ export function ImageDropZone({ previewUrl, fileName, error, disabled, onFiles }
       <input
         ref={inputRef}
         type="file"
-        accept={SUPPORTED_IMAGE_TYPES.join(',')}
+        accept={SUPPORTED_FILE_TYPES.join(',')}
         className="sr-only"
         tabIndex={-1}
         aria-hidden="true"
@@ -49,21 +64,30 @@ export function ImageDropZone({ previewUrl, fileName, error, disabled, onFiles }
           event.target.value = ''
         }}
       />
-      {previewUrl ? (
+      {fileName ? (
         <div className="flex min-h-0 flex-1 flex-col gap-3">
           <div className="flex items-center justify-between gap-2">
-            <p className="truncate text-sm text-slate-600 dark:text-slate-400" title={fileName ?? undefined}>
-              {fileName}
-            </p>
+            <div className="min-w-0">
+              <p className="truncate text-sm text-slate-600 dark:text-slate-400" title={fileName}>
+                {fileName}
+              </p>
+              {details && <p className="text-xs text-slate-500 dark:text-slate-400">{details}</p>}
+            </div>
             <Button onClick={openFilePicker} disabled={disabled}>
-              Choose another image
+              Choose another file
             </Button>
           </div>
-          <img
-            src={previewUrl}
-            alt={fileName ? `Selected image: ${fileName}` : 'Selected image'}
-            className="min-h-0 flex-1 rounded-lg border border-slate-200 bg-white object-contain dark:border-slate-800 dark:bg-slate-950"
-          />
+          {previewUrl ? (
+            <img
+              src={previewUrl}
+              alt={isPdf ? `First page of ${fileName}` : `Selected image: ${fileName}`}
+              className="min-h-0 flex-1 rounded-lg border border-slate-200 bg-white object-contain dark:border-slate-800 dark:bg-slate-950"
+            />
+          ) : (
+            <div className="flex flex-1 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
+              {isPreviewLoading ? 'Loading preview…' : 'Preview not available'}
+            </div>
+          )}
         </div>
       ) : (
         <div
@@ -71,12 +95,12 @@ export function ImageDropZone({ previewUrl, fileName, error, disabled, onFiles }
             isDragging ? 'border-sky-500' : 'border-slate-300 dark:border-slate-700'
           }`}
         >
-          <p className="font-medium text-slate-700 dark:text-slate-200">Drop an image here</p>
+          <p className="font-medium text-slate-700 dark:text-slate-200">Drop an image or PDF here</p>
           <p className="text-sm text-slate-500 dark:text-slate-400">or paste one with Ctrl+V / ⌘V</p>
           <Button variant="primary" onClick={openFilePicker} disabled={disabled}>
-            Choose image
+            Choose file
           </Button>
-          <p className="text-xs text-slate-500 dark:text-slate-400">PNG, JPEG, WebP, BMP or GIF</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">PNG, JPEG, WebP, BMP, GIF or PDF</p>
         </div>
       )}
       {error && (

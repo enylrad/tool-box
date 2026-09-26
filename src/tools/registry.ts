@@ -38,8 +38,9 @@ export const TOOLS: ToolDefinition[] = [
   {
     id: 'image-ocr',
     path: '/image-to-text',
-    name: 'Image to Text (OCR)',
-    description: 'Extract text from images in English or Spanish with Tesseract OCR. Drop, pick or paste an image.',
+    name: 'Image & PDF to Text (OCR)',
+    description:
+      'Extract text from images and PDFs in English or Spanish. PDF text is read directly; scanned pages go through Tesseract OCR.',
     component: lazy(() => import('../features/image-ocr/ImageOcrPage')),
   },
 ]

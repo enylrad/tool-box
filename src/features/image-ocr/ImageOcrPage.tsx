@@ -4,70 +4,74 @@ import { useClipboard } from '../../hooks/useClipboard'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { downloadBlob } from '../../lib/download'
-import { ImageDropZone } from './components/ImageDropZone'
 import { OcrOutput } from './components/OcrOutput'
 import { OcrToolbar } from './components/OcrToolbar'
-import { useImageSource } from './hooks/useImageSource'
-import { useOcrWorker, type OcrResult } from './hooks/useOcrWorker'
-import { toTextFileName } from './lib/imageFile'
+import { SourceDropZone } from './components/SourceDropZone'
+import { usePdfPreview } from './hooks/usePdfPreview'
+import { useSourceFile } from './hooks/useSourceFile'
+import { useTextExtraction } from './hooks/useTextExtraction'
 import { DEFAULT_OCR_LANGUAGE, isOcrLanguage, type OcrLanguage } from './lib/ocrLanguages'
+import { describeResult, type ExtractionResult } from './lib/resultSummary'
+import { isPdf, toTextFileName } from './lib/sourceFile'
 
 const LANGUAGE_STORAGE_KEY = 'tool-box:image-ocr:language'
 
 export default function ImageOcrPage() {
-  useDocumentTitle('Image to Text (OCR)')
+  useDocumentTitle('Image & PDF to Text (OCR)')
 
   const [storedLanguage, setLanguage] = useLocalStorage<OcrLanguage>(LANGUAGE_STORAGE_KEY, DEFAULT_OCR_LANGUAGE)
   const language = isOcrLanguage(storedLanguage) ? storedLanguage : DEFAULT_OCR_LANGUAGE
-  const [result, setResult] = useState<OcrResult | null>(null)
+  const [result, setResult] = useState<ExtractionResult | null>(null)
   const [text, setText] = useState('')
   const [activePane, setActivePane] = useState<SplitPaneSide>('left')
-  const { recognize, isRecognizing, progress, error: ocrError } = useOcrWorker()
+  const { extract, cancel, isExtracting, progress, error: extractionError } = useTextExtraction()
   const { copy, copied, error: copyError } = useClipboard()
 
   const extractText = async (file: File, ocrLanguage = language) => {
     setActivePane('right')
     setResult(null)
     setText('')
-    const nextResult = await recognize(file, ocrLanguage)
+    const nextResult = await extract(file, ocrLanguage)
     if (nextResult) {
       setResult(nextResult)
       setText(nextResult.text)
     }
   }
 
-  // Text is extracted as soon as an image is chosen, dropped or pasted.
-  const { image, previewUrl, error: imageError, selectFiles, clearImage } = useImageSource({
-    onSelect: (file) => void extractText(file),
-    disabled: isRecognizing,
+  // Text is extracted as soon as a file is chosen, dropped or pasted.
+  const { file, imageUrl, error: fileError, selectFiles, clearFile } = useSourceFile({
+    onSelect: (selectedFile) => void extractText(selectedFile),
+    disabled: isExtracting,
   })
+  const sourceIsPdf = file !== null && isPdf(file)
+  const pdfPreview = usePdfPreview(sourceIsPdf ? file : null)
 
   const handleDownload = () => {
     const blob = new Blob([text], { type: 'text/plain;charset=utf-8' })
-    downloadBlob(blob, toTextFileName(image?.name ?? ''))
+    downloadBlob(blob, toTextFileName(file?.name ?? ''))
   }
 
   const handleLanguageChange = (nextLanguage: OcrLanguage) => {
     setLanguage(nextLanguage)
-    if (image) void extractText(image, nextLanguage)
+    if (file) void extractText(file, nextLanguage)
   }
 
   const handleClear = () => {
     setActivePane('left')
-    clearImage()
+    clearFile()
     setResult(null)
     setText('')
   }
 
   const statusText = result
-    ? `Done · ${Math.round(result.confidence)}% confidence`
-    : image
-      ? isRecognizing
+    ? describeResult(result)
+    : file
+      ? isExtracting
         ? 'Extracting text…'
         : 'Ready to extract text'
-      : 'Choose, drop or paste an image to start'
+      : 'Choose, drop or paste an image or PDF to start'
 
-  const error = ocrError ?? copyError
+  const error = extractionError ?? copyError
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -75,11 +79,12 @@ export default function ImageOcrPage() {
         language={language}
         onLanguageChange={handleLanguageChange}
         statusText={statusText}
-        hasImage={image !== null}
+        hasFile={file !== null}
         hasText={text.length > 0}
-        isRecognizing={isRecognizing}
+        isExtracting={isExtracting}
         isCopied={copied}
-        onRecognize={() => image && void extractText(image)}
+        onExtract={() => file && void extractText(file)}
+        onCancel={cancel}
         onCopy={() => void copy(text)}
         onDownload={handleDownload}
         onClear={handleClear}
@@ -90,16 +95,19 @@ export default function ImageOcrPage() {
         </p>
       )}
       <SplitPane
-        leftLabel="Image"
+        leftLabel="File"
         rightLabel="Text"
         activePane={activePane}
         onActivePaneChange={setActivePane}
         left={
-          <ImageDropZone
-            previewUrl={previewUrl}
-            fileName={image?.name ?? null}
-            error={imageError}
-            disabled={isRecognizing}
+          <SourceDropZone
+            fileName={file?.name ?? null}
+            previewUrl={sourceIsPdf ? pdfPreview.imageUrl : imageUrl}
+            isPdf={sourceIsPdf}
+            pageCount={sourceIsPdf ? pdfPreview.pageCount : null}
+            isPreviewLoading={sourceIsPdf && pdfPreview.isLoading}
+            error={fileError}
+            disabled={isExtracting}
             onFiles={selectFiles}
           />
         }
