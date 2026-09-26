@@ -24,3 +24,14 @@ export function describeProgress({ status, progress }: OcrProgressMessage): OcrP
   const ratio = Number.isFinite(progress) ? Math.min(Math.max(progress, 0), 1) : 0
   return { label, percent: Math.round(ratio * 100) }
 }
+
+/** Progress of one page of a multi-page document, mapped onto the whole document. */
+export function describePageProgress(
+  { label, percent }: OcrProgress,
+  pageIndex: number,
+  pageCount: number,
+): OcrProgress {
+  if (pageCount <= 1) return { label, percent }
+  const overall = ((pageIndex + percent / 100) / pageCount) * 100
+  return { label: `Page ${pageIndex + 1} of ${pageCount} · ${label}`, percent: Math.round(overall) }
+}

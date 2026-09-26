@@ -5,11 +5,12 @@ interface OcrToolbarProps {
   language: OcrLanguage
   onLanguageChange: (language: OcrLanguage) => void
   statusText: string
-  hasImage: boolean
+  hasFile: boolean
   hasText: boolean
-  isRecognizing: boolean
+  isExtracting: boolean
   isCopied: boolean
-  onRecognize: () => void
+  onExtract: () => void
+  onCancel: () => void
   onCopy: () => void
   onDownload: () => void
   onClear: () => void
@@ -19,11 +20,12 @@ export function OcrToolbar({
   language,
   onLanguageChange,
   statusText,
-  hasImage,
+  hasFile,
   hasText,
-  isRecognizing,
+  isExtracting,
   isCopied,
-  onRecognize,
+  onExtract,
+  onCancel,
   onCopy,
   onDownload,
   onClear,
@@ -31,7 +33,7 @@ export function OcrToolbar({
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-slate-200 bg-white px-4 py-2 dark:border-slate-800 dark:bg-slate-900">
       <div className="min-w-0 flex-1 basis-56">
-        <h1 className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">Image to Text (OCR)</h1>
+        <h1 className="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">Image &amp; PDF to Text (OCR)</h1>
         <p className="truncate text-xs text-slate-500 dark:text-slate-400" aria-live="polite">
           {statusText}
         </p>
@@ -43,7 +45,7 @@ export function OcrToolbar({
             className="rounded-md bg-white px-2 py-1.5 text-sm text-slate-900 ring-1 ring-slate-300 ring-inset focus-visible:outline-2 focus-visible:outline-sky-600 disabled:opacity-60 dark:bg-slate-800 dark:text-slate-100 dark:ring-slate-600"
             value={language}
             onChange={(event) => onLanguageChange(event.target.value as OcrLanguage)}
-            disabled={isRecognizing}
+            disabled={isExtracting}
           >
             {OCR_LANGUAGES.map((option) => (
               <option key={option.code} value={option.code}>
@@ -52,17 +54,23 @@ export function OcrToolbar({
             ))}
           </select>
         </label>
-        <Button variant="ghost" onClick={onClear} disabled={isRecognizing || (!hasImage && !hasText)}>
-          Clear
-        </Button>
+        {isExtracting ? (
+          <Button variant="ghost" onClick={onCancel}>
+            Cancel
+          </Button>
+        ) : (
+          <Button variant="ghost" onClick={onClear} disabled={!hasFile && !hasText}>
+            Clear
+          </Button>
+        )}
         <Button onClick={onCopy} disabled={!hasText}>
           {isCopied ? 'Copied!' : 'Copy'}
         </Button>
         <Button onClick={onDownload} disabled={!hasText}>
           Download .txt
         </Button>
-        <Button variant="primary" onClick={onRecognize} disabled={!hasImage || isRecognizing} aria-busy={isRecognizing}>
-          {isRecognizing ? 'Extracting…' : 'Extract text'}
+        <Button variant="primary" onClick={onExtract} disabled={!hasFile || isExtracting} aria-busy={isExtracting}>
+          {isExtracting ? 'Extracting…' : 'Extract text'}
         </Button>
       </div>
     </div>

@@ -11,7 +11,7 @@ export function OcrOutput({ text, onTextChange, progress, hasResult }: OcrOutput
   if (progress) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-3 bg-white p-6 dark:bg-slate-950">
-        <p className="text-sm text-slate-600 dark:text-slate-300">{progress.label}</p>
+        <p className="text-center text-sm text-slate-600 dark:text-slate-300">{progress.label}</p>
         <div
           role="progressbar"
           aria-label={progress.label}
