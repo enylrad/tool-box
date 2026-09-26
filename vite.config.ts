@@ -33,14 +33,15 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
-        // html2pdf.js (with jsPDF and html2canvas) is large; raise the limit so
-        // it is precached and PDF export keeps working offline.
+        // html2pdf.js (with jsPDF and html2canvas) and the audio encoders are
+        // large; raise the limit so they are precached and exports keep working offline.
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
       },
     }),
   ],
   build: {
-    // html2pdf.js (~930 kB) is only loaded on demand when exporting a PDF.
+    // html2pdf.js (~930 kB) and the audio encoders (AAC ~990 kB, WebAssembly inlined)
+    // are only loaded on demand when exporting.
     chunkSizeWarningLimit: 1000,
   },
   test: {

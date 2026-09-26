@@ -9,6 +9,7 @@ A collection of handy tools that run **entirely in your browser**. Nothing is up
 | Tool | Route | What it does |
 | --- | --- | --- |
 | Markdown to PDF & HTML | `#/markdown-to-pdf` | Markdown editor with live preview, syntax highlighting, PDF export and standalone HTML export. Text is auto-saved in the browser. |
+| Audio Editor & Converter | `#/audio-editor` | Open an audio file (or a video, to extract its audio), see its waveform, select a range and trim, delete, fade, silence, normalize, change the gain, reverse or convert to mono, with undo/redo. Export to MP3, WAV, FLAC, M4A (AAC), OGG (Opus) or WebM (Opus) with a chosen bitrate, sample rate and channel count. |
 
 ## Getting started
 
@@ -63,6 +64,13 @@ src/
         ├── hooks/                      # useMarkdownDocument, useMarkdownParser, usePdfExport, useHtmlExport
         ├── lib/                        # Pure logic: parser + sanitizer, HTML template, title extraction
         └── styles/document.css         # Document styles shared by preview, PDF and HTML export
+    └── audio-editor/
+        ├── AudioEditorPage.tsx         # Screen: file loading, header, empty state
+        ├── AudioWorkspace.tsx          # Editing screen for one file: waveform, transport, edits, export
+        ├── components/                 # Waveform canvas, transport bar, edit toolbar, export panel, drop target
+        ├── hooks/                      # useAudioDocument (undo/redo), useAudioPlayback, useAudioExport, shortcuts
+        └── lib/                        # Pure logic: edits, history, peaks, time parsing, output formats,
+                                        # plus decode.ts / encode.ts (Web Audio + Mediabunny, loaded on demand)
 ```
 
 The rule of thumb: **components** only render, **hooks** hold state and side effects, **lib** holds pure, unit-tested functions.
@@ -86,4 +94,4 @@ The rule of thumb: **components** only render, **hooks** hold state and side eff
 
 ## Tech stack
 
-[Vite](https://vite.dev) · [React](https://react.dev) · TypeScript · [Tailwind CSS](https://tailwindcss.com) · [React Router](https://reactrouter.com) (hash routing, so reloading a tool URL works on GitHub Pages) · [vite-plugin-pwa](https://vite-pwa-org.netlify.app) · [marked](https://marked.js.org) · [DOMPurify](https://github.com/cure53/DOMPurify) · [highlight.js](https://highlightjs.org) · [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/) · [Vitest](https://vitest.dev)
+[Vite](https://vite.dev) · [React](https://react.dev) · TypeScript · [Tailwind CSS](https://tailwindcss.com) · [React Router](https://reactrouter.com) (hash routing, so reloading a tool URL works on GitHub Pages) · [vite-plugin-pwa](https://vite-pwa-org.netlify.app) · [marked](https://marked.js.org) · [DOMPurify](https://github.com/cure53/DOMPurify) · [highlight.js](https://highlightjs.org) · [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/) · [Mediabunny](https://mediabunny.dev) (with its LAME MP3, libFLAC and AAC WebAssembly encoders) · [Vitest](https://vitest.dev)
