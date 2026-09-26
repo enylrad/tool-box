@@ -35,4 +35,11 @@ export const TOOLS: ToolDefinition[] = [
     description: 'Count words, characters, sentences and paragraphs as you type, and see the estimated reading time.',
     component: lazy(() => import('../features/word-counter/WordCounterPage')),
   },
+  {
+    id: 'image-ocr',
+    path: '/image-to-text',
+    name: 'Image to Text (OCR)',
+    description: 'Extract text from images in English or Spanish with Tesseract OCR. Drop, pick or paste an image.',
+    component: lazy(() => import('../features/image-ocr/ImageOcrPage')),
+  },
 ]
