@@ -1,6 +1,7 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Button } from '../../../components/Button'
 import { clampCrop, type CropRect, type Size } from '../../../lib/cropGeometry'
+import { IMAGE_FORMAT_IDS, IMAGE_FORMATS, type ImageFormatId } from '../lib/captureFrame'
 import type { Transform } from '../lib/cropGeometry'
 import { ASPECT_PRESETS } from '../hooks/useEditSettings'
 
@@ -54,6 +55,11 @@ interface CropControlsProps {
   onEditingChange: (isEditing: boolean) => void
   onAspectPreset: (presetId: string) => void
   onChange: (crop: CropRect) => void
+  onDownloadImage: (format: ImageFormatId) => void
+  /** Why the frame can't be captured, or `null` when it can. */
+  downloadImageDisabledReason: string | null
+  isDownloadingImage: boolean
+  downloadImageError: string | null
 }
 
 const FIELDS: { key: keyof CropRect; label: string }[] = [
@@ -62,6 +68,14 @@ const FIELDS: { key: keyof CropRect; label: string }[] = [
   { key: 'width', label: 'Width' },
   { key: 'height', label: 'Height' },
 ]
+
+function pillClass(isSelected: boolean) {
+  return `rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${
+    isSelected
+      ? 'bg-sky-600 text-white ring-sky-600'
+      : 'text-slate-700 ring-slate-300 hover:bg-slate-100 dark:text-slate-300 dark:ring-slate-600 dark:hover:bg-slate-800'
+  }`
+}
 
 export function CropControls({
   frame,
@@ -73,7 +87,14 @@ export function CropControls({
   onEditingChange,
   onAspectPreset,
   onChange,
+  onDownloadImage,
+  downloadImageDisabledReason,
+  isDownloadingImage,
+  downloadImageError,
 }: CropControlsProps) {
+  const [isImageOptionsOpen, setIsImageOptionsOpen] = useState(false)
+  const [imageFormat, setImageFormat] = useState<ImageFormatId>('jpeg')
+
   if (!crop) {
     return (
       <Button onClick={onStart} className="w-full">
@@ -92,11 +113,7 @@ export function CropControls({
             role="radio"
             aria-checked={aspectPresetId === preset.id}
             onClick={() => onAspectPreset(preset.id)}
-            className={`rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${
-              aspectPresetId === preset.id
-                ? 'bg-sky-600 text-white ring-sky-600'
-                : 'text-slate-700 ring-slate-300 hover:bg-slate-100 dark:text-slate-300 dark:ring-slate-600 dark:hover:bg-slate-800'
-            }`}
+            className={pillClass(aspectPresetId === preset.id)}
           >
             {preset.label}
           </button>
@@ -137,6 +154,50 @@ export function CropControls({
         <p className="text-xs text-slate-500 dark:text-slate-400">
           Drag the box or its corners on the video. Press Done to preview the result.
         </p>
+      )}
+      <Button
+        variant="ghost"
+        className="-mx-1 self-start text-xs"
+        aria-expanded={isImageOptionsOpen}
+        onClick={() => setIsImageOptionsOpen((isOpen) => !isOpen)}
+      >
+        Download crop as photo…
+      </Button>
+      {isImageOptionsOpen && (
+        <div className="flex flex-col gap-2 rounded-md bg-slate-50 p-2.5 dark:bg-slate-800/60">
+          <div className="flex items-center gap-2">
+            <div role="radiogroup" aria-label="Photo format" className="flex flex-1 flex-wrap gap-1.5">
+              {IMAGE_FORMAT_IDS.map((formatId) => (
+                <button
+                  key={formatId}
+                  type="button"
+                  role="radio"
+                  aria-checked={imageFormat === formatId}
+                  onClick={() => setImageFormat(formatId)}
+                  className={pillClass(imageFormat === formatId)}
+                >
+                  {IMAGE_FORMATS[formatId].label}
+                </button>
+              ))}
+            </div>
+            <Button
+              variant="primary"
+              className="text-xs"
+              disabled={downloadImageDisabledReason !== null || isDownloadingImage}
+              onClick={() => onDownloadImage(imageFormat)}
+            >
+              {isDownloadingImage ? 'Saving…' : 'Download'}
+            </Button>
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            {downloadImageDisabledReason ?? 'Captures the frame at the playhead.'}
+          </p>
+          {downloadImageError && (
+            <p role="alert" className="text-xs text-red-600 dark:text-red-400">
+              {downloadImageError}
+            </p>
+          )}
+        </div>
       )}
     </div>
   )
