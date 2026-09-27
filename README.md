@@ -6,19 +6,22 @@ A collection of handy tools that run **entirely in your browser**. Nothing is up
 
 ## Tools
 
+The home page groups the tools by category: Images, Documents & text, Audio & video, 3D & maps, and Utilities.
+
 | Tool | Route | What it does |
 | --- | --- | --- |
-| Markdown to PDF & HTML | `#/markdown-to-pdf` | Markdown editor with live preview, syntax highlighting, PDF export and standalone HTML export. Text is auto-saved in the browser. |
+| Image Cropper, Resizer & Watermarker | `#/image-editor` | Open, drop or paste one image and crop it (free or 1:1, 4:3, 3:2, 16:9, 3:4, 9:16 or the original ratio), resize it (original, percentage, or a custom size that fits a box or stretches to it) and add a text watermark (color, opacity, size, 9 positions or tiled with adjustable spacing and angle). A before/after slider and a size bar compare dimensions, file size and format. Download as PNG, JPEG or WebP with a quality setting. Everything is drawn with the native `<canvas>` API; resize, watermark and export settings are remembered. |
+| Icon & Favicon Generator | `#/icon-generator` | Upload one image (PNG, JPG, WebP or SVG) and generate every icon size at once: Android launcher icons for all densities (legacy, round, adaptive foreground, themed/monochrome and Play Store), an Xcode `AppIcon.appiconset` with `Contents.json`, web favicons (`favicon.ico`, PNGs, Apple touch icon, PWA and maskable icons, `site.webmanifest` and a `<head>` snippet) and a multi-resolution Windows `app.ico`. Background color, transparency, shape and padding are adjustable, with masked previews. Download everything as a ZIP or single files. |
+| Photo Metadata Viewer | `#/photo-metadata` | Drop a photo (JPEG, PNG, WebP, HEIC, AVIF, TIFF or camera RAW) to see its size, dimensions, real format and dates; camera, lens and exposure (aperture, shutter speed, ISO, focal length, flash); GPS location with Google Maps and OpenStreetMap links; a privacy risk summary; editing history and AI/C2PA markers; a SHA-256 fingerprint; and every raw EXIF, XMP, IPTC, ICC and maker-note tag in a searchable tree (exportable as JSON). It can also download a clean copy with the metadata removed losslessly (JPEG, PNG and WebP). C2PA signatures are detected but not verified, since that needs online certificate lists. |
 | QR Code Generator | `#/qr-code-generator` | Vector QR codes for text/URLs, Wi-Fi, contacts (vCard), email, SMS and phone calls. Custom colors, square/rounded/dot modules, center logo and silhouette shapes from any image. Export as SVG or PNG, or copy the SVG code. |
+| Markdown to PDF & HTML | `#/markdown-to-pdf` | Markdown editor with live preview, syntax highlighting, PDF export and standalone HTML export. Text is auto-saved in the browser. |
 | Word Counter | `#/word-counter` | Real-time count of words, characters (with and without spaces), sentences, paragraphs and lines, plus estimated reading and speaking time. Works with any language and is auto-saved in the browser. |
 | Image & PDF to Text (OCR) | `#/image-to-text` | Extracts text from an image or a PDF (picked, dropped or pasted with Ctrl+V) in English, Spanish or both. PDF pages with embedded text are read directly with pdf.js; scanned pages go through Tesseract.js OCR, with per-page progress and a Cancel button. The text can be edited, copied or downloaded as `.txt`. |
 | Video Editor & Converter | `#/video-converter` | Trim, crop, rotate and flip a video with a live preview, then convert it to MP4, WebM, MOV, MKV, AVI, GIF, MP3 or WAV. Powered by ffmpeg compiled to WebAssembly; the video never leaves the device. |
 | Audio Editor & Converter | `#/audio-editor` | Open an audio file (or a video, to extract its audio), see its waveform, select a range and trim, delete, fade, silence, normalize, change the gain, reverse or convert to mono, with undo/redo. Export to MP3, WAV, FLAC, M4A (AAC), OGG (Opus) or WebM (Opus) with a chosen bitrate, sample rate and channel count. |
-| Password Generator | `#/password-generator` | Random passwords from 4 to 128 characters built with the browser's cryptographic random generator (`crypto.getRandomValues`, without modulo bias). Choose lowercase, uppercase, numbers and symbols, avoid look-alike characters, generate up to 10 at once and see the estimated strength. Only the settings are remembered, never the passwords. |
 | 3D Model Viewer | `#/3d-model-viewer` | Drop an OBJ, glTF, GLB or STL (binary or ASCII) model (with its `.mtl`, `.bin` and texture files, if any) to view it in 3D with three.js: orbit, pan and zoom, wireframe, grid, auto-rotate, light/dark/transparent background, glTF animations, model statistics (meshes, vertices, triangles, materials, textures, size) and PNG screenshots. STL files are turned upright (they are Z-up, as used for 3D printing). Meshopt-compressed glTF is supported; Draco and KTX2 are not yet. |
-| Icon & Favicon Generator | `#/icon-generator` | Upload one image (PNG, JPG, WebP or SVG) and generate every icon size at once: Android launcher icons for all densities (legacy, round, adaptive foreground, themed/monochrome and Play Store), an Xcode `AppIcon.appiconset` with `Contents.json`, web favicons (`favicon.ico`, PNGs, Apple touch icon, PWA and maskable icons, `site.webmanifest` and a `<head>` snippet) and a multi-resolution Windows `app.ico`. Background color, transparency, shape and padding are adjustable, with masked previews. Download everything as a ZIP or single files. |
 | GPX Route & Elevation Analyzer | `#/gpx-analyzer` | Open a GPX track or route (or try the built-in sample) and see it in a zoomable 2D view and a rotatable 3D view (three.js) with adjustable vertical exaggeration, colored by grade or elevation. An elevation profile with a synced hover marker, total ascent and descent (with a 3 m noise filter), highest/lowest point, steepest grades, detected climbs, per-km splits and, when the file has timestamps, total/moving time, speeds and pace. No map tiles are downloaded, so it works offline and the route never leaves the device. |
-| Photo Metadata Viewer | `#/photo-metadata` | Drop a photo (JPEG, PNG, WebP, HEIC, AVIF, TIFF or camera RAW) to see its size, dimensions, real format and dates; camera, lens and exposure (aperture, shutter speed, ISO, focal length, flash); GPS location with Google Maps and OpenStreetMap links; a privacy risk summary; editing history and AI/C2PA markers; a SHA-256 fingerprint; and every raw EXIF, XMP, IPTC, ICC and maker-note tag in a searchable tree (exportable as JSON). It can also download a clean copy with the metadata removed losslessly (JPEG, PNG and WebP). C2PA signatures are detected but not verified, since that needs online certificate lists. |
+| Password Generator | `#/password-generator` | Random passwords from 4 to 128 characters built with the browser's cryptographic random generator (`crypto.getRandomValues`, without modulo bias). Choose lowercase, uppercase, numbers and symbols, avoid look-alike characters, generate up to 10 at once and see the estimated strength. Only the settings are remembered, never the passwords. |
 
 ## Getting started
 
@@ -62,11 +65,11 @@ src/
 ├── main.tsx                 # Entry point (like Application + MainActivity)
 ├── App.tsx                  # Routes, generated from the tool registry
 ├── index.css                # Tailwind CSS entry
-├── tools/registry.ts        # List of every tool (name, route, lazy-loaded page)
-├── components/              # Shared UI: Layout, HomePage, Button, Panel, SplitPane, FileDropTarget
+├── tools/registry.ts        # List of every tool (name, route, category, lazy-loaded page) and the home page categories
+├── components/              # Shared UI: Layout, HomePage, Button, Panel, SplitPane, FileDropTarget, CropOverlay
 │   └── form/                # Shared form controls: TextInput, Select, ColorInput, Slider, FileDrop…
 ├── hooks/                   # Shared hooks: useLocalStorage, useDebouncedValue, useClipboard, useElementSize…
-├── lib/                     # Shared pure functions: file downloads, colors, byte sizes
+├── lib/                     # Shared pure functions: file downloads, colors, byte sizes, crop rectangle geometry
 └── features/
     ├── markdown-converter/
     │   ├── MarkdownConverterPage.tsx   # Screen: wires hooks to components
@@ -125,6 +128,13 @@ src/
     │   ├── hooks/                      # useGpxFile (read, parse and analyze)
     │   └── lib/                        # Pure logic: GPX parsing, distances, elevation gain/loss, grades,
     │                                   # climbs, splits, color scales, formatting, sample route
+    ├── image-editor/
+    │   ├── ImageEditorPage.tsx         # Screen: drop zone, then the workspace for the open image
+    │   ├── ImageWorkspace.tsx          # Settings sidebar, crop view / before-after slider, size bar
+    │   ├── components/                 # Crop, resize, watermark and export panels, crop view, compare slider
+    │   ├── hooks/                      # useSourceImage (open/paste), useEditorSettings (saved), useRenderedOutput
+    │   └── lib/                        # Pure logic: output size, watermark layout, formats and file names,
+    │                                   # plus render.ts (canvas crop, step-down resize, watermark, encoding)
     └── photo-metadata/
         ├── PhotoMetadataPage.tsx       # Screen: drop zone, preview + clean copy on the left, info cards on the right
         ├── components/                 # Privacy badge/summary, info cards, GPS, editing & AI, fingerprint, raw tree
@@ -154,10 +164,11 @@ The video tool uses [ffmpeg.wasm](https://ffmpegwasm.netlify.app) with the **sin
      path: '/json-formatter',
      name: 'JSON Formatter',
      description: 'Format and validate JSON.',
+     category: 'utilities',
      component: lazy(() => import('../features/json-formatter/JsonFormatterPage')),
    },
    ```
-   The home page card and the route are created automatically.
+   The home page card (in its category's section, see `TOOL_CATEGORIES`) and the route are created automatically.
 3. Keep it offline: bundle libraries with `npm install` instead of loading them from a CDN, and never send user data to a server.
 4. Put pure logic in `lib/` and cover it with `*.test.ts` files next to it.
 

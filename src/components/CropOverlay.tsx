@@ -60,21 +60,27 @@ export function CropOverlay({ frame, crop, aspectRatio, onChange }: CropOverlayP
     if (dragRef.current?.pointerId === event.pointerId) dragRef.current = null
   }
 
+  const boxStyle = {
+    left: percent(crop.x, frame.width),
+    top: percent(crop.y, frame.height),
+    width: percent(crop.width, frame.width),
+    height: percent(crop.height, frame.height),
+  }
+
   return (
-    <div ref={containerRef} className="absolute inset-0 touch-none overflow-hidden select-none">
+    <div ref={containerRef} className="absolute inset-0 touch-none select-none">
+      {/* The shade is clipped to the frame; the box and its handles may overhang the edges so they stay grabbable. */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute shadow-[0_0_0_9999px_rgba(2,6,23,0.6)]" style={boxStyle} />
+      </div>
       <div
         role="presentation"
         onPointerDown={(event) => startDrag(event, 'move')}
         onPointerMove={handleMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
-        className="absolute cursor-move border-2 border-white shadow-[0_0_0_9999px_rgba(2,6,23,0.6)]"
-        style={{
-          left: percent(crop.x, frame.width),
-          top: percent(crop.y, frame.height),
-          width: percent(crop.width, frame.width),
-          height: percent(crop.height, frame.height),
-        }}
+        className="absolute cursor-move border-2 border-white"
+        style={boxStyle}
       >
         {/* Rule-of-thirds guides. */}
         <div className="pointer-events-none absolute inset-0 grid grid-cols-3 grid-rows-3">

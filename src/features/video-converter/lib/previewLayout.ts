@@ -1,4 +1,5 @@
-import { outputSize, type Size, type Transform } from './cropGeometry'
+import type { Size } from '../../../lib/cropGeometry'
+import { outputSize, type Transform } from './cropGeometry'
 
 export interface PreviewLayout {
   /** Width / height of the output picture; the preview box uses it as its aspect ratio. */

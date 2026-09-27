@@ -1,7 +1,8 @@
 import type { CSSProperties } from 'react'
-import { IDENTITY_TRANSFORM, type CropRect, type Size, type Transform } from '../lib/cropGeometry'
+import { CropOverlay } from '../../../components/CropOverlay'
+import type { CropRect, Size } from '../../../lib/cropGeometry'
+import { IDENTITY_TRANSFORM, type Transform } from '../lib/cropGeometry'
 import { computePreviewLayout } from '../lib/previewLayout'
-import { CropOverlay } from './CropOverlay'
 
 interface VideoPreviewProps {
   url: string

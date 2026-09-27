@@ -1,4 +1,4 @@
-import type { Size } from './cropGeometry'
+import type { Size } from '../../../lib/cropGeometry'
 
 export interface MediaInfo extends Size {
   /** Seconds, or `null` if ffmpeg could not tell. */

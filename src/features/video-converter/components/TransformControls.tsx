@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Button } from '../../../components/Button'
-import { clampCrop, type CropRect, type Size, type Transform } from '../lib/cropGeometry'
+import { clampCrop, type CropRect, type Size } from '../../../lib/cropGeometry'
+import type { Transform } from '../lib/cropGeometry'
 import { ASPECT_PRESETS } from '../hooks/useEditSettings'
 
 interface TransformControlsProps {
