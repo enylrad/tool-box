@@ -66,6 +66,28 @@ export const TOOLS: ToolDefinition[] = [
     component: lazy(() => import('../features/password-generator/PasswordGeneratorPage')),
   },
   {
+    id: 'model-viewer',
+    path: '/3d-model-viewer',
+    name: '3D Model Viewer',
+    description: 'Drop an OBJ, glTF or GLB file to view it in 3D: orbit, zoom, wireframe, animations and model stats.',
+    component: lazy(() => import('../features/model-viewer/ModelViewerPage')),
+  },
+  {
+    id: 'icon-generator',
+    path: '/icon-generator',
+    name: 'Icon & Favicon Generator',
+    description:
+      'Turn one image into every app icon and favicon size for Android, iOS, the web and Windows, and download them as a ready-to-use ZIP.',
+    component: lazy(() => import('../features/icon-generator/IconGeneratorPage')),
+  },
+  {
+    id: 'gpx-analyzer',
+    path: '/gpx-analyzer',
+    name: 'GPX Route & Elevation Analyzer',
+    description: 'Open a GPX file to see the route in 2D and 3D, its elevation profile, total ascent and descent, grades and climbs.',
+    component: lazy(() => import('../features/gpx-analyzer/GpxAnalyzerPage')),
+  },
+  {
     id: 'photo-metadata',
     path: '/photo-metadata',
     name: 'Photo Metadata Viewer',

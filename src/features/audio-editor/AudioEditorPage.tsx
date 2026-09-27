@@ -1,8 +1,8 @@
+import { FileDropTarget } from '../../components/FileDropTarget'
 import { useDocumentTitle } from '../../hooks/useDocumentTitle'
 import { AudioWorkspace } from './AudioWorkspace'
 import { EditorHeader } from './components/EditorHeader'
 import { EmptyState } from './components/EmptyState'
-import { FileDropTarget } from './components/FileDropTarget'
 import { useAudioDocument } from './hooks/useAudioDocument'
 
 export default function AudioEditorPage() {
