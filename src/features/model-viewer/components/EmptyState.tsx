@@ -22,7 +22,7 @@ export function EmptyState({ isLoading, onFiles }: EmptyStateProps) {
             <div>
               <p className="font-medium">Drop a 3D model here</p>
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                OBJ, glTF or GLB. Drop its .mtl, .bin and texture files together with it to see materials and textures.
+                OBJ, glTF, GLB or STL. Drop its .mtl, .bin and texture files together with it to see materials and textures.
               </p>
             </div>
             <OpenFilesButton onFiles={onFiles} variant="primary" label="Choose files" />

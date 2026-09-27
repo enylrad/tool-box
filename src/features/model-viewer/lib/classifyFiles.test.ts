@@ -23,16 +23,23 @@ describe('classifyFiles', () => {
     expect(classifyFiles([mtl, obj, texture])).toEqual({ main: obj, format: 'obj', resources: [mtl, texture] })
   })
 
-  it('prefers GLB over glTF over OBJ', () => {
+  it('opens STL models', () => {
+    const stl = file('bracket.STL')
+    expect(classifyFiles([stl])).toEqual({ main: stl, format: 'stl', resources: [] })
+  })
+
+  it('prefers GLB over glTF over OBJ over STL', () => {
     const obj = file('a.obj')
     const gltf = file('a.gltf')
     const glb = file('a.glb')
     expect(classifyFiles([obj, gltf, glb]).main).toBe(glb)
     expect(classifyFiles([obj, gltf]).main).toBe(gltf)
+    expect(classifyFiles([file('a.stl'), obj]).main).toBe(obj)
   })
 
   it('names formats that are not supported', () => {
     expect(() => classifyFiles([file('car.FBX')])).toThrow(/FBX files are not supported/)
+    expect(() => classifyFiles([file('scan.ply')])).toThrow(/PLY files are not supported/)
   })
 
   it('rejects files that are not 3D models', () => {
