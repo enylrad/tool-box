@@ -72,4 +72,12 @@ export const TOOLS: ToolDefinition[] = [
     description: 'Drop an OBJ, glTF or GLB file to view it in 3D: orbit, zoom, wireframe, animations and model stats.',
     component: lazy(() => import('../features/model-viewer/ModelViewerPage')),
   },
+  {
+    id: 'icon-generator',
+    path: '/icon-generator',
+    name: 'Icon & Favicon Generator',
+    description:
+      'Turn one image into every app icon and favicon size for Android, iOS, the web and Windows, and download them as a ready-to-use ZIP.',
+    component: lazy(() => import('../features/icon-generator/IconGeneratorPage')),
+  },
 ]

@@ -2,7 +2,7 @@ import { Button } from '../../../components/Button'
 import { downloadBlob } from '../../../lib/download'
 import type { EngineStatus } from '../hooks/useFfmpeg'
 import type { ConversionState } from '../hooks/useVideoConversion'
-import { formatBytes } from '../lib/formatBytes'
+import { formatBytes } from '../../../lib/formatBytes'
 
 interface ConvertPanelProps {
   engineStatus: EngineStatus
