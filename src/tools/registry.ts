@@ -57,4 +57,12 @@ export const TOOLS: ToolDefinition[] = [
     description: 'Trim, cut, fade, normalize and adjust the volume of audio files, then convert them to MP3, WAV, FLAC, M4A, OGG or WebM.',
     component: lazy(() => import('../features/audio-editor/AudioEditorPage')),
   },
+  {
+    id: 'password-generator',
+    path: '/password-generator',
+    name: 'Password Generator',
+    description:
+      'Generate strong random passwords with the Web Crypto API. Choose the length and character types; nothing leaves your device.',
+    component: lazy(() => import('../features/password-generator/PasswordGeneratorPage')),
+  },
 ]

@@ -14,6 +14,7 @@ A collection of handy tools that run **entirely in your browser**. Nothing is up
 | Image & PDF to Text (OCR) | `#/image-to-text` | Extracts text from an image or a PDF (picked, dropped or pasted with Ctrl+V) in English, Spanish or both. PDF pages with embedded text are read directly with pdf.js; scanned pages go through Tesseract.js OCR, with per-page progress and a Cancel button. The text can be edited, copied or downloaded as `.txt`. |
 | Video Editor & Converter | `#/video-converter` | Trim, crop, rotate and flip a video with a live preview, then convert it to MP4, WebM, MOV, MKV, AVI, GIF, MP3 or WAV. Powered by ffmpeg compiled to WebAssembly; the video never leaves the device. |
 | Audio Editor & Converter | `#/audio-editor` | Open an audio file (or a video, to extract its audio), see its waveform, select a range and trim, delete, fade, silence, normalize, change the gain, reverse or convert to mono, with undo/redo. Export to MP3, WAV, FLAC, M4A (AAC), OGG (Opus) or WebM (Opus) with a chosen bitrate, sample rate and channel count. |
+| Password Generator | `#/password-generator` | Random passwords from 4 to 128 characters built with the browser's cryptographic random generator (`crypto.getRandomValues`, without modulo bias). Choose lowercase, uppercase, numbers and symbols, avoid look-alike characters, generate up to 10 at once and see the estimated strength. Only the settings are remembered, never the passwords. |
 
 ## Getting started
 
@@ -89,13 +90,18 @@ src/
     │   ├── components/                 # Preview with crop overlay, playback bar, trim/transform/format panels
     │   ├── hooks/                      # useFfmpeg (engine in a Web Worker), useVideoFile, useEditSettings, useVideoConversion
     │   └── lib/                        # Pure logic: ffmpeg arguments, formats, crop geometry, timecodes, log parsing
-    └── audio-editor/
-        ├── AudioEditorPage.tsx         # Screen: file loading, header, empty state
-        ├── AudioWorkspace.tsx          # Editing screen for one file: waveform, transport, edits, export
-        ├── components/                 # Waveform canvas, transport bar, edit toolbar, export panel, drop target
-        ├── hooks/                      # useAudioDocument (undo/redo), useAudioPlayback, useAudioExport, shortcuts
-        └── lib/                        # Pure logic: edits, history, peaks, time parsing, output formats,
-                                        # plus decode.ts / encode.ts (Web Audio + Mediabunny, loaded on demand)
+    ├── audio-editor/
+    │   ├── AudioEditorPage.tsx         # Screen: file loading, header, empty state
+    │   ├── AudioWorkspace.tsx          # Editing screen for one file: waveform, transport, edits, export
+    │   ├── components/                 # Waveform canvas, transport bar, edit toolbar, export panel, drop target
+    │   ├── hooks/                      # useAudioDocument (undo/redo), useAudioPlayback, useAudioExport, shortcuts
+    │   └── lib/                        # Pure logic: edits, history, peaks, time parsing, output formats,
+    │                                   # plus decode.ts / encode.ts (Web Audio + Mediabunny, loaded on demand)
+    └── password-generator/
+        ├── PasswordGeneratorPage.tsx   # Screen: generated passwords, strength meter, options
+        ├── components/                 # Password row with copy, strength meter, options panel
+        ├── hooks/                      # usePasswordOptions (saved settings), usePasswordGenerator
+        └── lib/                        # Pure logic: unbiased secure random, character sets, generator, strength
 scripts/
 └── copy-ocr-assets.mjs         # Copies the OCR engine, language data and pdf.js into public/
 ```
