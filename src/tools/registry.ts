@@ -58,6 +58,14 @@ export const TOOLS: ToolDefinition[] = [
     component: lazy(() => import('../features/audio-editor/AudioEditorPage')),
   },
   {
+    id: 'password-generator',
+    path: '/password-generator',
+    name: 'Password Generator',
+    description:
+      'Generate strong random passwords with the Web Crypto API. Choose the length and character types; nothing leaves your device.',
+    component: lazy(() => import('../features/password-generator/PasswordGeneratorPage')),
+  },
+  {
     id: 'model-viewer',
     path: '/3d-model-viewer',
     name: '3D Model Viewer',
