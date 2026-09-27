@@ -87,4 +87,12 @@ export const TOOLS: ToolDefinition[] = [
     description: 'Open a GPX file to see the route in 2D and 3D, its elevation profile, total ascent and descent, grades and climbs.',
     component: lazy(() => import('../features/gpx-analyzer/GpxAnalyzerPage')),
   },
+  {
+    id: 'photo-metadata',
+    path: '/photo-metadata',
+    name: 'Photo Metadata Viewer',
+    description:
+      'See everything hidden in a photo — camera, exposure, dates, GPS location, editing and AI traces, raw EXIF/XMP/IPTC/ICC — and remove it before sharing.',
+    component: lazy(() => import('../features/photo-metadata/PhotoMetadataPage')),
+  },
 ]

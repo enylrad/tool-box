@@ -18,6 +18,7 @@ A collection of handy tools that run **entirely in your browser**. Nothing is up
 | 3D Model Viewer | `#/3d-model-viewer` | Drop an OBJ, glTF or GLB model (with its `.mtl`, `.bin` and texture files, if any) to view it in 3D with three.js: orbit, pan and zoom, wireframe, grid, auto-rotate, light/dark/transparent background, glTF animations, model statistics (meshes, vertices, triangles, materials, textures, size) and PNG screenshots. Meshopt-compressed glTF is supported; Draco and KTX2 are not yet. |
 | Icon & Favicon Generator | `#/icon-generator` | Upload one image (PNG, JPG, WebP or SVG) and generate every icon size at once: Android launcher icons for all densities (legacy, round, adaptive foreground, themed/monochrome and Play Store), an Xcode `AppIcon.appiconset` with `Contents.json`, web favicons (`favicon.ico`, PNGs, Apple touch icon, PWA and maskable icons, `site.webmanifest` and a `<head>` snippet) and a multi-resolution Windows `app.ico`. Background color, transparency, shape and padding are adjustable, with masked previews. Download everything as a ZIP or single files. |
 | GPX Route & Elevation Analyzer | `#/gpx-analyzer` | Open a GPX track or route (or try the built-in sample) and see it in a zoomable 2D view and a rotatable 3D view (three.js) with adjustable vertical exaggeration, colored by grade or elevation. An elevation profile with a synced hover marker, total ascent and descent (with a 3 m noise filter), highest/lowest point, steepest grades, detected climbs, per-km splits and, when the file has timestamps, total/moving time, speeds and pace. No map tiles are downloaded, so it works offline and the route never leaves the device. |
+| Photo Metadata Viewer | `#/photo-metadata` | Drop a photo (JPEG, PNG, WebP, HEIC, AVIF, TIFF or camera RAW) to see its size, dimensions, real format and dates; camera, lens and exposure (aperture, shutter speed, ISO, focal length, flash); GPS location with Google Maps and OpenStreetMap links; a privacy risk summary; editing history and AI/C2PA markers; a SHA-256 fingerprint; and every raw EXIF, XMP, IPTC, ICC and maker-note tag in a searchable tree (exportable as JSON). It can also download a clean copy with the metadata removed losslessly (JPEG, PNG and WebP). C2PA signatures are detected but not verified, since that needs online certificate lists. |
 
 ## Getting started
 
@@ -117,13 +118,18 @@ src/
     │   ├── hooks/                      # useIconSettings, useIconSource (raster/SVG), useIconBundle (rendering), useIconExport
     │   └── lib/                        # Pure logic: platform size specs, layout, .ico encoder, manifests, bundle, ZIP;
     │                                   # plus render.ts (canvas rasterizer)
-    └── gpx-analyzer/
-        ├── GpxAnalyzerPage.tsx         # Screen: file loading, header, empty state with a sample route
-        ├── RouteWorkspace.tsx          # Analysis screen: 2D/3D view, elevation profile, statistics
-        ├── components/                 # 2D canvas map, 3D three.js view (loaded on demand), profile, stats
-        ├── hooks/                      # useGpxFile (read, parse and analyze)
-        └── lib/                        # Pure logic: GPX parsing, distances, elevation gain/loss, grades,
-                                        # climbs, splits, color scales, formatting, sample route
+    ├── gpx-analyzer/
+    │   ├── GpxAnalyzerPage.tsx         # Screen: file loading, header, empty state with a sample route
+    │   ├── RouteWorkspace.tsx          # Analysis screen: 2D/3D view, elevation profile, statistics
+    │   ├── components/                 # 2D canvas map, 3D three.js view (loaded on demand), profile, stats
+    │   ├── hooks/                      # useGpxFile (read, parse and analyze)
+    │   └── lib/                        # Pure logic: GPX parsing, distances, elevation gain/loss, grades,
+    │                                   # climbs, splits, color scales, formatting, sample route
+    └── photo-metadata/
+        ├── PhotoMetadataPage.tsx       # Screen: drop zone, preview + clean copy on the left, info cards on the right
+        ├── components/                 # Privacy badge/summary, info cards, GPS, editing & AI, fingerprint, raw tree
+        ├── hooks/                      # usePhotoFile (reads the file, tags, SHA-256 and preview in memory)
+        └── lib/                        # Pure logic: ExifReader wrapper, format sniffing, GPS, camera, AI/C2PA signals, lossless metadata removal
 scripts/
 └── copy-ocr-assets.mjs         # Copies the OCR engine, language data and pdf.js into public/
 ```
