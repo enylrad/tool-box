@@ -1,12 +1,6 @@
 import { useCallback, useState } from 'react'
-import {
-  IDENTITY_TRANSFORM,
-  centeredCrop,
-  rotate,
-  type CropRect,
-  type Size,
-  type Transform,
-} from '../lib/cropGeometry'
+import { centeredCrop, type CropRect, type Size } from '../../../lib/cropGeometry'
+import { IDENTITY_TRANSFORM, rotate, type Transform } from '../lib/cropGeometry'
 import { DEFAULT_FORMAT_ID, type OutputFormatId } from '../lib/formats'
 import { clampTrim, type TrimRange } from '../lib/timecode'
 
