@@ -57,4 +57,12 @@ export const TOOLS: ToolDefinition[] = [
     description: 'Trim, cut, fade, normalize and adjust the volume of audio files, then convert them to MP3, WAV, FLAC, M4A, OGG or WebM.',
     component: lazy(() => import('../features/audio-editor/AudioEditorPage')),
   },
+  {
+    id: 'icon-generator',
+    path: '/icon-generator',
+    name: 'Icon & Favicon Generator',
+    description:
+      'Turn one image into every app icon and favicon size for Android, iOS, the web and Windows, and download them as a ready-to-use ZIP.',
+    component: lazy(() => import('../features/icon-generator/IconGeneratorPage')),
+  },
 ]
