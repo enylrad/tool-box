@@ -1,7 +1,8 @@
-import { LoadingManager, MeshStandardMaterial, type AnimationClip, type Material, type Mesh, type Object3D } from 'three'
+import { LoadingManager, Mesh, MeshStandardMaterial, type AnimationClip, type Material, type Object3D } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
+import { STLLoader } from 'three/examples/jsm/loaders/STLLoader.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import { classifyFiles, type ModelFormat } from './classifyFiles'
 import { computeModelStats, type ModelStats } from './modelStats'
@@ -66,16 +67,33 @@ async function loadObj(main: File, manager: LoadingManager, resolver: ResourceRe
   return { object, animations: [] as AnimationClip[] }
 }
 
-/** Gives an OBJ without materials a neutral PBR look instead of OBJLoader's flat white Phong. */
+/** The neutral PBR material shown for models that bring no materials of their own. */
+function createDefaultMaterial(vertexColors: boolean) {
+  return new MeshStandardMaterial({ color: vertexColors ? 0xffffff : 0xb4bcc6, roughness: 0.55, metalness: 0.1, vertexColors })
+}
+
+/** Gives an OBJ without materials the default look instead of OBJLoader's flat white Phong. */
 function applyDefaultMaterial(root: Object3D) {
-  const plain = new MeshStandardMaterial({ color: 0xb4bcc6, roughness: 0.55, metalness: 0.1 })
-  const colored = new MeshStandardMaterial({ roughness: 0.55, metalness: 0.1, vertexColors: true })
+  const shared = new Map<boolean, MeshStandardMaterial>()
   root.traverse((object) => {
     const mesh = object as Mesh
     if (!mesh.isMesh) return
     for (const material of ([] as Material[]).concat(mesh.material)) material.dispose()
-    mesh.material = mesh.geometry.hasAttribute('color') ? colored : plain
+    const vertexColors = mesh.geometry.hasAttribute('color')
+    if (!shared.has(vertexColors)) shared.set(vertexColors, createDefaultMaterial(vertexColors))
+    mesh.material = shared.get(vertexColors)!
   })
+}
+
+async function loadStl(main: File) {
+  const geometry = new STLLoader().parse(await main.arrayBuffer())
+  // Many exporters write zero or wrong facet normals; rebuild them from the triangle winding.
+  geometry.computeVertexNormals()
+  const mesh = new Mesh(geometry, createDefaultMaterial(geometry.hasAttribute('color')))
+  mesh.name = main.name
+  // STL files (made for 3D printing) are Z-up; three.js is Y-up.
+  mesh.rotation.x = -Math.PI / 2
+  return { object: mesh as Object3D, animations: [] as AnimationClip[] }
 }
 
 /** Opens a dropped model (and the resources dropped with it) as a three.js object tree. */
@@ -86,7 +104,8 @@ export async function loadModel(files: readonly File[]): Promise<LoadedModel> {
   manager.setURLModifier(resolver.resolve)
 
   try {
-    const { object, animations } = format === 'obj' ? await loadObj(main, manager, resolver) : await loadGltf(main, manager)
+    const { object, animations } =
+      format === 'obj' ? await loadObj(main, manager, resolver) : format === 'stl' ? await loadStl(main) : await loadGltf(main, manager)
     if (!object) throw new Error('The file does not contain any scene.')
     return {
       fileName: main.name,

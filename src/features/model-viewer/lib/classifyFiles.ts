@@ -1,4 +1,4 @@
-export type ModelFormat = 'glb' | 'gltf' | 'obj'
+export type ModelFormat = 'glb' | 'gltf' | 'obj' | 'stl'
 
 export interface ClassifiedFiles {
   /** The model file to open. */
@@ -9,12 +9,12 @@ export interface ClassifiedFiles {
 }
 
 /** Model formats in the order they are preferred when several are dropped together. */
-const MODEL_FORMATS: readonly ModelFormat[] = ['glb', 'gltf', 'obj']
+const MODEL_FORMATS: readonly ModelFormat[] = ['glb', 'gltf', 'obj', 'stl']
 
 /** 3D formats people commonly try that this viewer cannot open. */
-const UNSUPPORTED_MODEL_FORMATS = new Set(['fbx', 'stl', 'ply', 'dae', '3ds', 'blend', 'usdz', 'usd', 'max', 'c4d', '3mf'])
+const UNSUPPORTED_MODEL_FORMATS = new Set(['fbx', 'ply', 'dae', '3ds', 'blend', 'usdz', 'usd', 'max', 'c4d', '3mf'])
 
-export const ACCEPTED_FILE_TYPES = '.obj,.mtl,.gltf,.glb,.bin,image/*,.ktx2'
+export const ACCEPTED_FILE_TYPES = '.obj,.mtl,.gltf,.glb,.stl,.bin,image/*,.ktx2'
 
 /** Lower-case extension without the dot, or an empty string. */
 export function extensionOf(fileName: string) {
@@ -32,8 +32,8 @@ export function classifyFiles(files: readonly File[]): ClassifiedFiles {
   const unsupported = files.find((file) => UNSUPPORTED_MODEL_FORMATS.has(extensionOf(file.name)))
   if (unsupported) {
     throw new Error(
-      `${extensionOf(unsupported.name).toUpperCase()} files are not supported. Export the model as glTF/GLB or OBJ and try again.`,
+      `${extensionOf(unsupported.name).toUpperCase()} files are not supported. Export the model as glTF/GLB, OBJ or STL and try again.`,
     )
   }
-  throw new Error('No 3D model found. Drop an .obj, .gltf or .glb file (optionally with its .mtl, .bin and texture files).')
+  throw new Error('No 3D model found. Drop an .obj, .gltf, .glb or .stl file (optionally with its .mtl, .bin and texture files).')
 }

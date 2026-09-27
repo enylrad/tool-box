@@ -41,6 +41,29 @@ function triangleGltf(bufferUri: string) {
 const TRIANGLE_BUFFER = new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0])
 const TRIANGLE_DATA_URI = `data:application/octet-stream;base64,${Buffer.from(TRIANGLE_BUFFER.buffer).toString('base64')}`
 
+/** One facet standing 2 units tall along Z, as STL files for 3D printing are Z-up. */
+const TRIANGLE_STL = `solid tri
+facet normal 0 -1 0
+  outer loop
+    vertex 0 0 0
+    vertex 1 0 0
+    vertex 0 0 2
+  endloop
+endfacet
+endsolid tri
+`
+
+/** A binary STL: 80-byte header, triangle count, then 50 bytes per triangle. */
+function binaryStl(triangles: number[][]) {
+  const view = new DataView(new ArrayBuffer(84 + triangles.length * 50))
+  view.setUint32(80, triangles.length, true)
+  triangles.forEach((vertices, index) => {
+    // Normal (left as zero) followed by three vertices; the 2-byte attribute count stays zero.
+    vertices.forEach((value, component) => view.setFloat32(84 + index * 50 + 12 + component * 4, value, true))
+  })
+  return view.buffer
+}
+
 describe('loadModel', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
@@ -61,6 +84,28 @@ describe('loadModel', () => {
     expect(model.missing).toEqual(['cube.mtl'])
     const material = (model.object.children[0] as Mesh).material as MeshStandardMaterial
     expect(material.isMeshStandardMaterial).toBe(true)
+  })
+
+  it('opens an ASCII STL standing upright', async () => {
+    const model = await loadModel([new File([TRIANGLE_STL], 'tri.stl')])
+    expect(model.format).toBe('stl')
+    expect(model.stats).toMatchObject({ meshes: 1, vertices: 3, triangles: 1, materials: 1 })
+    // The Z-up height becomes the Y-up height.
+    expect(model.stats.size.y).toBeCloseTo(2)
+    expect(model.stats.size.z).toBeCloseTo(0)
+    expect(((model.object as Mesh).material as MeshStandardMaterial).isMeshStandardMaterial).toBe(true)
+  })
+
+  it('opens a binary STL', async () => {
+    const buffer = binaryStl([
+      [0, 0, 0, 1, 0, 0, 0, 1, 0],
+      [1, 0, 0, 1, 1, 0, 0, 1, 0],
+    ])
+    const model = await loadModel([new File([buffer], 'square.stl')])
+    expect(model.stats).toMatchObject({ meshes: 1, vertices: 6, triangles: 2 })
+    // The file's normals are zero; they are rebuilt from the counter-clockwise winding (+Z).
+    const normal = (model.object as Mesh).geometry.getAttribute('normal')
+    expect([normal.getX(0), normal.getY(0), normal.getZ(0)]).toEqual([0, 0, 1])
   })
 
   it('opens a glTF with an embedded buffer', async () => {

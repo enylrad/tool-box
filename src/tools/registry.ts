@@ -69,7 +69,7 @@ export const TOOLS: ToolDefinition[] = [
     id: 'model-viewer',
     path: '/3d-model-viewer',
     name: '3D Model Viewer',
-    description: 'Drop an OBJ, glTF or GLB file to view it in 3D: orbit, zoom, wireframe, animations and model stats.',
+    description: 'Drop an OBJ, glTF, GLB or STL file to view it in 3D: orbit, zoom, wireframe, animations and model stats.',
     component: lazy(() => import('../features/model-viewer/ModelViewerPage')),
   },
   {

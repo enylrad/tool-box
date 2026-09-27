@@ -18,7 +18,7 @@ export function ViewerHeader({ model, isLoading, onFiles }: ViewerHeaderProps) {
             ? 'Loading model…'
             : model
               ? [model.format.toUpperCase(), formatQuantity(model.stats.triangles, 'triangle'), formatQuantity(model.stats.vertices, 'vertex', 'vertices')].join(' · ')
-              : 'Open an OBJ, glTF or GLB file to view it in 3D'}
+              : 'Open an OBJ, glTF, GLB or STL file to view it in 3D'}
         </p>
       </div>
       {model && <OpenFilesButton onFiles={onFiles} label="Open another model" disabled={isLoading} />}
