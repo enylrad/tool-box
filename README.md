@@ -14,6 +14,7 @@ A collection of handy tools that run **entirely in your browser**. Nothing is up
 | Image & PDF to Text (OCR) | `#/image-to-text` | Extracts text from an image or a PDF (picked, dropped or pasted with Ctrl+V) in English, Spanish or both. PDF pages with embedded text are read directly with pdf.js; scanned pages go through Tesseract.js OCR, with per-page progress and a Cancel button. The text can be edited, copied or downloaded as `.txt`. |
 | Video Editor & Converter | `#/video-converter` | Trim, crop, rotate and flip a video with a live preview, then convert it to MP4, WebM, MOV, MKV, AVI, GIF, MP3 or WAV. Powered by ffmpeg compiled to WebAssembly; the video never leaves the device. |
 | Audio Editor & Converter | `#/audio-editor` | Open an audio file (or a video, to extract its audio), see its waveform, select a range and trim, delete, fade, silence, normalize, change the gain, reverse or convert to mono, with undo/redo. Export to MP3, WAV, FLAC, M4A (AAC), OGG (Opus) or WebM (Opus) with a chosen bitrate, sample rate and channel count. |
+| 3D Model Viewer | `#/3d-model-viewer` | Drop an OBJ, glTF or GLB model (with its `.mtl`, `.bin` and texture files, if any) to view it in 3D with three.js: orbit, pan and zoom, wireframe, grid, auto-rotate, light/dark/transparent background, glTF animations, model statistics (meshes, vertices, triangles, materials, textures, size) and PNG screenshots. Meshopt-compressed glTF is supported; Draco and KTX2 are not yet. |
 
 ## Getting started
 
@@ -89,13 +90,19 @@ src/
     │   ├── components/                 # Preview with crop overlay, playback bar, trim/transform/format panels
     │   ├── hooks/                      # useFfmpeg (engine in a Web Worker), useVideoFile, useEditSettings, useVideoConversion
     │   └── lib/                        # Pure logic: ffmpeg arguments, formats, crop geometry, timecodes, log parsing
-    └── audio-editor/
-        ├── AudioEditorPage.tsx         # Screen: file loading, header, empty state
-        ├── AudioWorkspace.tsx          # Editing screen for one file: waveform, transport, edits, export
-        ├── components/                 # Waveform canvas, transport bar, edit toolbar, export panel, drop target
-        ├── hooks/                      # useAudioDocument (undo/redo), useAudioPlayback, useAudioExport, shortcuts
-        └── lib/                        # Pure logic: edits, history, peaks, time parsing, output formats,
-                                        # plus decode.ts / encode.ts (Web Audio + Mediabunny, loaded on demand)
+    ├── audio-editor/
+    │   ├── AudioEditorPage.tsx         # Screen: file loading, header, empty state
+    │   ├── AudioWorkspace.tsx          # Editing screen for one file: waveform, transport, edits, export
+    │   ├── components/                 # Waveform canvas, transport bar, edit toolbar, export panel, drop target
+    │   ├── hooks/                      # useAudioDocument (undo/redo), useAudioPlayback, useAudioExport, shortcuts
+    │   └── lib/                        # Pure logic: edits, history, peaks, time parsing, output formats,
+    │                                   # plus decode.ts / encode.ts (Web Audio + Mediabunny, loaded on demand)
+    └── model-viewer/
+        ├── ModelViewerPage.tsx         # Screen: drop target, toolbar, 3D viewport and model info panel
+        ├── components/                 # Header, toolbar, info/animation panel, empty state, multi-file drop target
+        ├── hooks/                      # useThreeScene, useModelFile, useModelAnimations, useViewerSettings
+        └── lib/                        # Pure logic: file classification, resource resolver, framing, stats, formatting,
+                                        # plus loadModel.ts / ViewerScene.ts (three.js loaders and renderer)
 scripts/
 └── copy-ocr-assets.mjs         # Copies the OCR engine, language data and pdf.js into public/
 ```

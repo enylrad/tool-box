@@ -57,4 +57,11 @@ export const TOOLS: ToolDefinition[] = [
     description: 'Trim, cut, fade, normalize and adjust the volume of audio files, then convert them to MP3, WAV, FLAC, M4A, OGG or WebM.',
     component: lazy(() => import('../features/audio-editor/AudioEditorPage')),
   },
+  {
+    id: 'model-viewer',
+    path: '/3d-model-viewer',
+    name: '3D Model Viewer',
+    description: 'Drop an OBJ, glTF or GLB file to view it in 3D: orbit, zoom, wireframe, animations and model stats.',
+    component: lazy(() => import('../features/model-viewer/ModelViewerPage')),
+  },
 ]
