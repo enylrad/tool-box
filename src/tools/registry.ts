@@ -80,4 +80,11 @@ export const TOOLS: ToolDefinition[] = [
       'Turn one image into every app icon and favicon size for Android, iOS, the web and Windows, and download them as a ready-to-use ZIP.',
     component: lazy(() => import('../features/icon-generator/IconGeneratorPage')),
   },
+  {
+    id: 'gpx-analyzer',
+    path: '/gpx-analyzer',
+    name: 'GPX Route & Elevation Analyzer',
+    description: 'Open a GPX file to see the route in 2D and 3D, its elevation profile, total ascent and descent, grades and climbs.',
+    component: lazy(() => import('../features/gpx-analyzer/GpxAnalyzerPage')),
+  },
 ]

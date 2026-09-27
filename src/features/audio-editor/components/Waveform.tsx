@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
+import { useEffect, useMemo, useRef, type KeyboardEvent, type PointerEvent } from 'react'
+import { useElementSize } from '../../../hooks/useElementSize'
 import { durationOf, type AudioData, type TimeRange } from '../lib/audioData'
 import { formatTime } from '../lib/formatTime'
 import { computePeaks } from '../lib/peaks'
@@ -23,24 +24,9 @@ const COLORS = {
   playhead: '#ef4444',
 }
 
-function useElementWidth<T extends HTMLElement>() {
-  const ref = useRef<T>(null)
-  const [width, setWidth] = useState(0)
-
-  useEffect(() => {
-    const element = ref.current
-    if (!element) return
-    const observer = new ResizeObserver(([entry]) => setWidth(Math.floor(entry.contentRect.width)))
-    observer.observe(element)
-    return () => observer.disconnect()
-  }, [])
-
-  return [ref, width] as const
-}
-
 /** Waveform with click-to-seek, drag-to-select and a playhead. */
 export function Waveform({ audio, selection, position, onSelectionChange, onSeek }: WaveformProps) {
-  const [containerRef, width] = useElementWidth<HTMLDivElement>()
+  const [containerRef, { width }] = useElementSize<HTMLDivElement>()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const dragRef = useRef<{ startX: number; startTime: number; isDragging: boolean } | null>(null)
   const duration = durationOf(audio)
