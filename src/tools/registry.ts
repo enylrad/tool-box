@@ -57,4 +57,11 @@ export const TOOLS: ToolDefinition[] = [
     description: 'Trim, cut, fade, normalize and adjust the volume of audio files, then convert them to MP3, WAV, FLAC, M4A, OGG or WebM.',
     component: lazy(() => import('../features/audio-editor/AudioEditorPage')),
   },
+  {
+    id: 'gpx-analyzer',
+    path: '/gpx-analyzer',
+    name: 'GPX Route & Elevation Analyzer',
+    description: 'Open a GPX file to see the route in 2D and 3D, its elevation profile, total ascent and descent, grades and climbs.',
+    component: lazy(() => import('../features/gpx-analyzer/GpxAnalyzerPage')),
+  },
 ]

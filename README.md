@@ -14,6 +14,7 @@ A collection of handy tools that run **entirely in your browser**. Nothing is up
 | Image & PDF to Text (OCR) | `#/image-to-text` | Extracts text from an image or a PDF (picked, dropped or pasted with Ctrl+V) in English, Spanish or both. PDF pages with embedded text are read directly with pdf.js; scanned pages go through Tesseract.js OCR, with per-page progress and a Cancel button. The text can be edited, copied or downloaded as `.txt`. |
 | Video Editor & Converter | `#/video-converter` | Trim, crop, rotate and flip a video with a live preview, then convert it to MP4, WebM, MOV, MKV, AVI, GIF, MP3 or WAV. Powered by ffmpeg compiled to WebAssembly; the video never leaves the device. |
 | Audio Editor & Converter | `#/audio-editor` | Open an audio file (or a video, to extract its audio), see its waveform, select a range and trim, delete, fade, silence, normalize, change the gain, reverse or convert to mono, with undo/redo. Export to MP3, WAV, FLAC, M4A (AAC), OGG (Opus) or WebM (Opus) with a chosen bitrate, sample rate and channel count. |
+| GPX Route & Elevation Analyzer | `#/gpx-analyzer` | Open a GPX track or route (or try the built-in sample) and see it in a zoomable 2D view and a rotatable 3D view (three.js) with adjustable vertical exaggeration, colored by grade or elevation. An elevation profile with a synced hover marker, total ascent and descent (with a 3 m noise filter), highest/lowest point, steepest grades, detected climbs, per-km splits and, when the file has timestamps, total/moving time, speeds and pace. No map tiles are downloaded, so it works offline and the route never leaves the device. |
 
 ## Getting started
 
@@ -58,9 +59,9 @@ src/
 ├── App.tsx                  # Routes, generated from the tool registry
 ├── index.css                # Tailwind CSS entry
 ├── tools/registry.ts        # List of every tool (name, route, lazy-loaded page)
-├── components/              # Shared UI: Layout, HomePage, Button, Panel, SplitPane
+├── components/              # Shared UI: Layout, HomePage, Button, Panel, SplitPane, FileDropTarget
 │   └── form/                # Shared form controls: TextInput, Select, ColorInput, Slider, FileDrop…
-├── hooks/                   # Shared hooks: useLocalStorage, useDebouncedValue, useClipboard, useImageFile…
+├── hooks/                   # Shared hooks: useLocalStorage, useDebouncedValue, useClipboard, useElementSize…
 ├── lib/                     # Shared pure functions: file downloads, colors
 └── features/
     ├── markdown-converter/
@@ -89,13 +90,20 @@ src/
     │   ├── components/                 # Preview with crop overlay, playback bar, trim/transform/format panels
     │   ├── hooks/                      # useFfmpeg (engine in a Web Worker), useVideoFile, useEditSettings, useVideoConversion
     │   └── lib/                        # Pure logic: ffmpeg arguments, formats, crop geometry, timecodes, log parsing
-    └── audio-editor/
-        ├── AudioEditorPage.tsx         # Screen: file loading, header, empty state
-        ├── AudioWorkspace.tsx          # Editing screen for one file: waveform, transport, edits, export
-        ├── components/                 # Waveform canvas, transport bar, edit toolbar, export panel, drop target
-        ├── hooks/                      # useAudioDocument (undo/redo), useAudioPlayback, useAudioExport, shortcuts
-        └── lib/                        # Pure logic: edits, history, peaks, time parsing, output formats,
-                                        # plus decode.ts / encode.ts (Web Audio + Mediabunny, loaded on demand)
+    ├── audio-editor/
+    │   ├── AudioEditorPage.tsx         # Screen: file loading, header, empty state
+    │   ├── AudioWorkspace.tsx          # Editing screen for one file: waveform, transport, edits, export
+    │   ├── components/                 # Waveform canvas, transport bar, edit toolbar, export panel
+    │   ├── hooks/                      # useAudioDocument (undo/redo), useAudioPlayback, useAudioExport, shortcuts
+    │   └── lib/                        # Pure logic: edits, history, peaks, time parsing, output formats,
+    │                                   # plus decode.ts / encode.ts (Web Audio + Mediabunny, loaded on demand)
+    └── gpx-analyzer/
+        ├── GpxAnalyzerPage.tsx         # Screen: file loading, header, empty state with a sample route
+        ├── RouteWorkspace.tsx          # Analysis screen: 2D/3D view, elevation profile, statistics
+        ├── components/                 # 2D canvas map, 3D three.js view (loaded on demand), profile, stats
+        ├── hooks/                      # useGpxFile (read, parse and analyze)
+        └── lib/                        # Pure logic: GPX parsing, distances, elevation gain/loss, grades,
+                                        # climbs, splits, color scales, formatting, sample route
 scripts/
 └── copy-ocr-assets.mjs         # Copies the OCR engine, language data and pdf.js into public/
 ```
@@ -129,4 +137,4 @@ The video tool uses [ffmpeg.wasm](https://ffmpegwasm.netlify.app) with the **sin
 
 ## Tech stack
 
-[Vite](https://vite.dev) · [React](https://react.dev) · TypeScript · [Tailwind CSS](https://tailwindcss.com) · [React Router](https://reactrouter.com) (hash routing, so reloading a tool URL works on GitHub Pages) · [vite-plugin-pwa](https://vite-pwa-org.netlify.app) · [marked](https://marked.js.org) · [DOMPurify](https://github.com/cure53/DOMPurify) · [highlight.js](https://highlightjs.org) · [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/) · [node-qrcode](https://github.com/soldair/node-qrcode) · [Tesseract.js](https://tesseract.projectnaptha.com) · [pdf.js](https://mozilla.github.io/pdf.js/) · [ffmpeg.wasm](https://ffmpegwasm.netlify.app) · [Mediabunny](https://mediabunny.dev) (with its LAME MP3, libFLAC and AAC WebAssembly encoders) · [Vitest](https://vitest.dev) + [jsQR](https://github.com/cozmo/jsQR) (tests decode every generated QR code)
+[Vite](https://vite.dev) · [React](https://react.dev) · TypeScript · [Tailwind CSS](https://tailwindcss.com) · [React Router](https://reactrouter.com) (hash routing, so reloading a tool URL works on GitHub Pages) · [vite-plugin-pwa](https://vite-pwa-org.netlify.app) · [marked](https://marked.js.org) · [DOMPurify](https://github.com/cure53/DOMPurify) · [highlight.js](https://highlightjs.org) · [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/) · [node-qrcode](https://github.com/soldair/node-qrcode) · [Tesseract.js](https://tesseract.projectnaptha.com) · [pdf.js](https://mozilla.github.io/pdf.js/) · [ffmpeg.wasm](https://ffmpegwasm.netlify.app) · [Mediabunny](https://mediabunny.dev) (with its LAME MP3, libFLAC and AAC WebAssembly encoders) · [three.js](https://threejs.org) · [Vitest](https://vitest.dev) + [jsQR](https://github.com/cozmo/jsQR) (tests decode every generated QR code)
