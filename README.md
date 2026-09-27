@@ -14,6 +14,9 @@ A collection of handy tools that run **entirely in your browser**. Nothing is up
 | Image & PDF to Text (OCR) | `#/image-to-text` | Extracts text from an image or a PDF (picked, dropped or pasted with Ctrl+V) in English, Spanish or both. PDF pages with embedded text are read directly with pdf.js; scanned pages go through Tesseract.js OCR, with per-page progress and a Cancel button. The text can be edited, copied or downloaded as `.txt`. |
 | Video Editor & Converter | `#/video-converter` | Trim, crop, rotate and flip a video with a live preview, then convert it to MP4, WebM, MOV, MKV, AVI, GIF, MP3 or WAV. Powered by ffmpeg compiled to WebAssembly; the video never leaves the device. |
 | Audio Editor & Converter | `#/audio-editor` | Open an audio file (or a video, to extract its audio), see its waveform, select a range and trim, delete, fade, silence, normalize, change the gain, reverse or convert to mono, with undo/redo. Export to MP3, WAV, FLAC, M4A (AAC), OGG (Opus) or WebM (Opus) with a chosen bitrate, sample rate and channel count. |
+| Password Generator | `#/password-generator` | Random passwords from 4 to 128 characters built with the browser's cryptographic random generator (`crypto.getRandomValues`, without modulo bias). Choose lowercase, uppercase, numbers and symbols, avoid look-alike characters, generate up to 10 at once and see the estimated strength. Only the settings are remembered, never the passwords. |
+| 3D Model Viewer | `#/3d-model-viewer` | Drop an OBJ, glTF or GLB model (with its `.mtl`, `.bin` and texture files, if any) to view it in 3D with three.js: orbit, pan and zoom, wireframe, grid, auto-rotate, light/dark/transparent background, glTF animations, model statistics (meshes, vertices, triangles, materials, textures, size) and PNG screenshots. Meshopt-compressed glTF is supported; Draco and KTX2 are not yet. |
+| Icon & Favicon Generator | `#/icon-generator` | Upload one image (PNG, JPG, WebP or SVG) and generate every icon size at once: Android launcher icons for all densities (legacy, round, adaptive foreground, themed/monochrome and Play Store), an Xcode `AppIcon.appiconset` with `Contents.json`, web favicons (`favicon.ico`, PNGs, Apple touch icon, PWA and maskable icons, `site.webmanifest` and a `<head>` snippet) and a multi-resolution Windows `app.ico`. Background color, transparency, shape and padding are adjustable, with masked previews. Download everything as a ZIP or single files. |
 | GPX Route & Elevation Analyzer | `#/gpx-analyzer` | Open a GPX track or route (or try the built-in sample) and see it in a zoomable 2D view and a rotatable 3D view (three.js) with adjustable vertical exaggeration, colored by grade or elevation. An elevation profile with a synced hover marker, total ascent and descent (with a 3 m noise filter), highest/lowest point, steepest grades, detected climbs, per-km splits and, when the file has timestamps, total/moving time, speeds and pace. No map tiles are downloaded, so it works offline and the route never leaves the device. |
 
 ## Getting started
@@ -62,7 +65,7 @@ src/
 ├── components/              # Shared UI: Layout, HomePage, Button, Panel, SplitPane, FileDropTarget
 │   └── form/                # Shared form controls: TextInput, Select, ColorInput, Slider, FileDrop…
 ├── hooks/                   # Shared hooks: useLocalStorage, useDebouncedValue, useClipboard, useElementSize…
-├── lib/                     # Shared pure functions: file downloads, colors
+├── lib/                     # Shared pure functions: file downloads, colors, byte sizes
 └── features/
     ├── markdown-converter/
     │   ├── MarkdownConverterPage.tsx   # Screen: wires hooks to components
@@ -97,6 +100,23 @@ src/
     │   ├── hooks/                      # useAudioDocument (undo/redo), useAudioPlayback, useAudioExport, shortcuts
     │   └── lib/                        # Pure logic: edits, history, peaks, time parsing, output formats,
     │                                   # plus decode.ts / encode.ts (Web Audio + Mediabunny, loaded on demand)
+    ├── password-generator/
+    │   ├── PasswordGeneratorPage.tsx   # Screen: generated passwords, strength meter, options
+    │   ├── components/                 # Password row with copy, strength meter, options panel
+    │   ├── hooks/                      # usePasswordOptions (saved settings), usePasswordGenerator
+    │   └── lib/                        # Pure logic: unbiased secure random, character sets, generator, strength
+    ├── model-viewer/
+    │   ├── ModelViewerPage.tsx         # Screen: drop target, toolbar, 3D viewport and model info panel
+    │   ├── components/                 # Header, toolbar, info/animation panel, empty state, multi-file drop target
+    │   ├── hooks/                      # useThreeScene, useModelFile, useModelAnimations, useViewerSettings
+    │   └── lib/                        # Pure logic: file classification, resource resolver, framing, stats, formatting,
+    │                                   # plus loadModel.ts / ViewerScene.ts (three.js loaders and renderer)
+    ├── icon-generator/
+    │   ├── IconGeneratorPage.tsx       # Screen: source + settings on the left, previews + ZIP export on the right
+    │   ├── components/                 # Source, platform, appearance and manifest panels, icon tiles, mask previews
+    │   ├── hooks/                      # useIconSettings, useIconSource (raster/SVG), useIconBundle (rendering), useIconExport
+    │   └── lib/                        # Pure logic: platform size specs, layout, .ico encoder, manifests, bundle, ZIP;
+    │                                   # plus render.ts (canvas rasterizer)
     └── gpx-analyzer/
         ├── GpxAnalyzerPage.tsx         # Screen: file loading, header, empty state with a sample route
         ├── RouteWorkspace.tsx          # Analysis screen: 2D/3D view, elevation profile, statistics
@@ -137,4 +157,4 @@ The video tool uses [ffmpeg.wasm](https://ffmpegwasm.netlify.app) with the **sin
 
 ## Tech stack
 
-[Vite](https://vite.dev) · [React](https://react.dev) · TypeScript · [Tailwind CSS](https://tailwindcss.com) · [React Router](https://reactrouter.com) (hash routing, so reloading a tool URL works on GitHub Pages) · [vite-plugin-pwa](https://vite-pwa-org.netlify.app) · [marked](https://marked.js.org) · [DOMPurify](https://github.com/cure53/DOMPurify) · [highlight.js](https://highlightjs.org) · [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/) · [node-qrcode](https://github.com/soldair/node-qrcode) · [Tesseract.js](https://tesseract.projectnaptha.com) · [pdf.js](https://mozilla.github.io/pdf.js/) · [ffmpeg.wasm](https://ffmpegwasm.netlify.app) · [Mediabunny](https://mediabunny.dev) (with its LAME MP3, libFLAC and AAC WebAssembly encoders) · [three.js](https://threejs.org) · [Vitest](https://vitest.dev) + [jsQR](https://github.com/cozmo/jsQR) (tests decode every generated QR code)
+[Vite](https://vite.dev) · [React](https://react.dev) · TypeScript · [Tailwind CSS](https://tailwindcss.com) · [React Router](https://reactrouter.com) (hash routing, so reloading a tool URL works on GitHub Pages) · [vite-plugin-pwa](https://vite-pwa-org.netlify.app) · [marked](https://marked.js.org) · [DOMPurify](https://github.com/cure53/DOMPurify) · [highlight.js](https://highlightjs.org) · [html2pdf.js](https://ekoopmans.github.io/html2pdf.js/) · [node-qrcode](https://github.com/soldair/node-qrcode) · [Tesseract.js](https://tesseract.projectnaptha.com) · [pdf.js](https://mozilla.github.io/pdf.js/) · [ffmpeg.wasm](https://ffmpegwasm.netlify.app) · [Mediabunny](https://mediabunny.dev) (with its LAME MP3, libFLAC and AAC WebAssembly encoders) · [fflate](https://github.com/101arrowz/fflate) · [three.js](https://threejs.org) · [Vitest](https://vitest.dev) + [jsQR](https://github.com/cozmo/jsQR) (tests decode every generated QR code)
