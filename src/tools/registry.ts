@@ -65,4 +65,11 @@ export const TOOLS: ToolDefinition[] = [
       'Generate strong random passwords with the Web Crypto API. Choose the length and character types; nothing leaves your device.',
     component: lazy(() => import('../features/password-generator/PasswordGeneratorPage')),
   },
+  {
+    id: 'model-viewer',
+    path: '/3d-model-viewer',
+    name: '3D Model Viewer',
+    description: 'Drop an OBJ, glTF or GLB file to view it in 3D: orbit, zoom, wireframe, animations and model stats.',
+    component: lazy(() => import('../features/model-viewer/ModelViewerPage')),
+  },
 ]

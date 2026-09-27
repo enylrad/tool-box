@@ -15,6 +15,7 @@ A collection of handy tools that run **entirely in your browser**. Nothing is up
 | Video Editor & Converter | `#/video-converter` | Trim, crop, rotate and flip a video with a live preview, then convert it to MP4, WebM, MOV, MKV, AVI, GIF, MP3 or WAV. Powered by ffmpeg compiled to WebAssembly; the video never leaves the device. |
 | Audio Editor & Converter | `#/audio-editor` | Open an audio file (or a video, to extract its audio), see its waveform, select a range and trim, delete, fade, silence, normalize, change the gain, reverse or convert to mono, with undo/redo. Export to MP3, WAV, FLAC, M4A (AAC), OGG (Opus) or WebM (Opus) with a chosen bitrate, sample rate and channel count. |
 | Password Generator | `#/password-generator` | Random passwords from 4 to 128 characters built with the browser's cryptographic random generator (`crypto.getRandomValues`, without modulo bias). Choose lowercase, uppercase, numbers and symbols, avoid look-alike characters, generate up to 10 at once and see the estimated strength. Only the settings are remembered, never the passwords. |
+| 3D Model Viewer | `#/3d-model-viewer` | Drop an OBJ, glTF or GLB model (with its `.mtl`, `.bin` and texture files, if any) to view it in 3D with three.js: orbit, pan and zoom, wireframe, grid, auto-rotate, light/dark/transparent background, glTF animations, model statistics (meshes, vertices, triangles, materials, textures, size) and PNG screenshots. Meshopt-compressed glTF is supported; Draco and KTX2 are not yet. |
 
 ## Getting started
 
@@ -97,11 +98,17 @@ src/
     │   ├── hooks/                      # useAudioDocument (undo/redo), useAudioPlayback, useAudioExport, shortcuts
     │   └── lib/                        # Pure logic: edits, history, peaks, time parsing, output formats,
     │                                   # plus decode.ts / encode.ts (Web Audio + Mediabunny, loaded on demand)
-    └── password-generator/
-        ├── PasswordGeneratorPage.tsx   # Screen: generated passwords, strength meter, options
-        ├── components/                 # Password row with copy, strength meter, options panel
-        ├── hooks/                      # usePasswordOptions (saved settings), usePasswordGenerator
-        └── lib/                        # Pure logic: unbiased secure random, character sets, generator, strength
+    ├── password-generator/
+    │   ├── PasswordGeneratorPage.tsx   # Screen: generated passwords, strength meter, options
+    │   ├── components/                 # Password row with copy, strength meter, options panel
+    │   ├── hooks/                      # usePasswordOptions (saved settings), usePasswordGenerator
+    │   └── lib/                        # Pure logic: unbiased secure random, character sets, generator, strength
+    └── model-viewer/
+        ├── ModelViewerPage.tsx         # Screen: drop target, toolbar, 3D viewport and model info panel
+        ├── components/                 # Header, toolbar, info/animation panel, empty state, multi-file drop target
+        ├── hooks/                      # useThreeScene, useModelFile, useModelAnimations, useViewerSettings
+        └── lib/                        # Pure logic: file classification, resource resolver, framing, stats, formatting,
+                                        # plus loadModel.ts / ViewerScene.ts (three.js loaders and renderer)
 scripts/
 └── copy-ocr-assets.mjs         # Copies the OCR engine, language data and pdf.js into public/
 ```
