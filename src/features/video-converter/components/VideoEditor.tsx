@@ -7,8 +7,10 @@ import type { VideoFileState } from '../hooks/useVideoFile'
 import { useVideoConversion } from '../hooks/useVideoConversion'
 import { useVideoPlayback } from '../hooks/useVideoPlayback'
 import { IDENTITY_TRANSFORM } from '../lib/cropGeometry'
+import { captureFrame, extensionForMime, type ImageFormatId } from '../lib/captureFrame'
+import { downloadBlob, toFileName } from '../../../lib/download'
 import { formatBytes } from '../../../lib/formatBytes'
-import type { TrimRange } from '../lib/timecode'
+import { formatTimecode, type TrimRange } from '../lib/timecode'
 import { VIDEO_ACCEPT, getOutputFormat } from '../lib/formats'
 import { ConvertPanel } from './ConvertPanel'
 import { OutputSettings } from './OutputSettings'
@@ -40,6 +42,8 @@ export function VideoEditor({ video, engine, onOpenFile, onLoadedMetadata, onPre
   const playback = useVideoPlayback(videoElement, settings.trim)
   const conversion = useVideoConversion(engine)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [isDownloadingImage, setIsDownloadingImage] = useState(false)
+  const [downloadImageError, setDownloadImageError] = useState<string | null>(null)
 
   const format = getOutputFormat(settings.formatId)
   const isAudioOnly = format.kind === 'audio'
@@ -56,6 +60,23 @@ export function VideoEditor({ video, engine, onOpenFile, onLoadedMetadata, onPre
     if (next.start !== settings.trim.start) playback.seek(next.start)
     else if (next.end !== settings.trim.end) playback.seek(next.end ?? duration ?? 0)
     settings.setTrim(next)
+  }
+
+  const handleDownloadImage = async (formatId: ImageFormatId) => {
+    if (!videoElement) return
+    videoElement.pause()
+    setIsDownloadingImage(true)
+    setDownloadImageError(null)
+    try {
+      const blob = await captureFrame(videoElement, settings.transform, formatId)
+      const baseName = file.name.replace(/\.[^.]*$/, '')
+      downloadBlob(blob, toFileName(`${baseName} ${formatTimecode(videoElement.currentTime)}`, extensionForMime(blob.type), 'frame'))
+    } catch (cause) {
+      console.error('Could not capture the frame', cause)
+      setDownloadImageError('The photo could not be created. Try another frame or format.')
+    } finally {
+      setIsDownloadingImage(false)
+    }
   }
 
   const handleConvert = () => {
@@ -159,6 +180,12 @@ export function VideoEditor({ video, engine, onOpenFile, onLoadedMetadata, onPre
                 onEditingChange={settings.setIsEditingCrop}
                 onAspectPreset={(presetId) => settings.chooseAspectPreset(presetId, frame)}
                 onChange={settings.setCrop}
+                onDownloadImage={(formatId) => void handleDownloadImage(formatId)}
+                downloadImageDisabledReason={
+                  preview === 'ready' ? null : 'This browser can’t play this file, so it can’t capture a photo.'
+                }
+                isDownloadingImage={isDownloadingImage}
+                downloadImageError={downloadImageError}
               />
             )}
           </Section>
