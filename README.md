@@ -15,6 +15,7 @@ A collection of handy tools that run **entirely in your browser**. Nothing is up
 | Video Editor & Converter | `#/video-converter` | Trim, crop, rotate and flip a video with a live preview, then convert it to MP4, WebM, MOV, MKV, AVI, GIF, MP3 or WAV. Powered by ffmpeg compiled to WebAssembly; the video never leaves the device. |
 | Audio Editor & Converter | `#/audio-editor` | Open an audio file (or a video, to extract its audio), see its waveform, select a range and trim, delete, fade, silence, normalize, change the gain, reverse or convert to mono, with undo/redo. Export to MP3, WAV, FLAC, M4A (AAC), OGG (Opus) or WebM (Opus) with a chosen bitrate, sample rate and channel count. |
 | Password Generator | `#/password-generator` | Random passwords from 4 to 128 characters built with the browser's cryptographic random generator (`crypto.getRandomValues`, without modulo bias). Choose lowercase, uppercase, numbers and symbols, avoid look-alike characters, generate up to 10 at once and see the estimated strength. Only the settings are remembered, never the passwords. |
+| Photo Metadata Viewer | `#/photo-metadata` | Drop a photo (JPEG, PNG, WebP, HEIC, AVIF, TIFF or camera RAW) to see its size, dimensions, real format and dates; camera, lens and exposure (aperture, shutter speed, ISO, focal length, flash); GPS location with Google Maps and OpenStreetMap links; a privacy risk summary; editing history and AI/C2PA markers; a SHA-256 fingerprint; and every raw EXIF, XMP, IPTC, ICC and maker-note tag in a searchable tree (exportable as JSON). It can also download a clean copy with the metadata removed losslessly (JPEG, PNG and WebP). C2PA signatures are detected but not verified, since that needs online certificate lists. |
 
 ## Getting started
 
@@ -62,7 +63,7 @@ src/
 ├── components/              # Shared UI: Layout, HomePage, Button, Panel, SplitPane
 │   └── form/                # Shared form controls: TextInput, Select, ColorInput, Slider, FileDrop…
 ├── hooks/                   # Shared hooks: useLocalStorage, useDebouncedValue, useClipboard, useImageFile…
-├── lib/                     # Shared pure functions: file downloads, colors
+├── lib/                     # Shared pure functions: file downloads, colors, byte sizes
 └── features/
     ├── markdown-converter/
     │   ├── MarkdownConverterPage.tsx   # Screen: wires hooks to components
@@ -97,11 +98,16 @@ src/
     │   ├── hooks/                      # useAudioDocument (undo/redo), useAudioPlayback, useAudioExport, shortcuts
     │   └── lib/                        # Pure logic: edits, history, peaks, time parsing, output formats,
     │                                   # plus decode.ts / encode.ts (Web Audio + Mediabunny, loaded on demand)
-    └── password-generator/
-        ├── PasswordGeneratorPage.tsx   # Screen: generated passwords, strength meter, options
-        ├── components/                 # Password row with copy, strength meter, options panel
-        ├── hooks/                      # usePasswordOptions (saved settings), usePasswordGenerator
-        └── lib/                        # Pure logic: unbiased secure random, character sets, generator, strength
+    ├── password-generator/
+    │   ├── PasswordGeneratorPage.tsx   # Screen: generated passwords, strength meter, options
+    │   ├── components/                 # Password row with copy, strength meter, options panel
+    │   ├── hooks/                      # usePasswordOptions (saved settings), usePasswordGenerator
+    │   └── lib/                        # Pure logic: unbiased secure random, character sets, generator, strength
+    └── photo-metadata/
+        ├── PhotoMetadataPage.tsx       # Screen: drop zone, preview + clean copy on the left, info cards on the right
+        ├── components/                 # Privacy badge/summary, info cards, GPS, editing & AI, fingerprint, raw tree
+        ├── hooks/                      # usePhotoFile (reads the file, tags, SHA-256 and preview in memory)
+        └── lib/                        # Pure logic: ExifReader wrapper, format sniffing, GPS, camera, AI/C2PA signals, lossless metadata removal
 scripts/
 └── copy-ocr-assets.mjs         # Copies the OCR engine, language data and pdf.js into public/
 ```

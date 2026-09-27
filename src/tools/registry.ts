@@ -65,4 +65,12 @@ export const TOOLS: ToolDefinition[] = [
       'Generate strong random passwords with the Web Crypto API. Choose the length and character types; nothing leaves your device.',
     component: lazy(() => import('../features/password-generator/PasswordGeneratorPage')),
   },
+  {
+    id: 'photo-metadata',
+    path: '/photo-metadata',
+    name: 'Photo Metadata Viewer',
+    description:
+      'See everything hidden in a photo — camera, exposure, dates, GPS location, editing and AI traces, raw EXIF/XMP/IPTC/ICC — and remove it before sharing.',
+    component: lazy(() => import('../features/photo-metadata/PhotoMetadataPage')),
+  },
 ]
